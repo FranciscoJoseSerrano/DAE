@@ -15,8 +15,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -48,7 +46,7 @@ public class Administrador implements Serializable {
     public Administrador(int id, String name, String password) {
         this.id = id;
         this.name = name;
-        this.password = password;
+        this.password = hashPassword(password);
     }
 
     public int getId() {

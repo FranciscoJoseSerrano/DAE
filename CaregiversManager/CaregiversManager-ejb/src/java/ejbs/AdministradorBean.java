@@ -5,57 +5,94 @@
  */
 package ejbs;
 
+
 import dtos.AdministradorDTO;
 import entities.Administrador;
+import exceptions.EntityDoesNotExistsException;
+import exceptions.MyConstraintViolationException;
+import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.GET;
+import javax.validation.ConstraintViolationException;
+
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+
 
 /**
  *
  * @author joaos
  */
 @Stateless
-@Path("/administradores")
 public class AdministradorBean {
 
     @PersistenceContext
     private EntityManager em;
 
-    public void create(int id, String password, String name) {
+    
+    public void create(int id, String name, String password) {
         try {
             if (em.find(Administrador.class, id) != null) {
                 return;
             }
-            em.persist(new Administrador(id, password, name));
+            em.persist(new Administrador(id, name, password));
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
     }
-
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("all")
-    public List<AdministradorDTO> getAll() {
+    
+    public void remove(int id) throws EntityDoesNotExistsException {
         try {
-            List<Administrador> administradores = (List<Administrador>) em.createNamedQuery("getAllAdministradores").getResultList();
-            return getAdministradorDTOS(administradores);
-        }catch (Exception e) {
+            Administrador administrador = em.find(Administrador.class, id);
+            if (administrador == null) {
+                throw new EntityDoesNotExistsException("There is no Administrador with that id.");
+            }        
+            em.remove(administrador);
+        } catch (EntityDoesNotExistsException e) {
+            throw e;
+        } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
     }
     
+    public void update(AdministradorDTO administradorDTO) 
+        throws EntityDoesNotExistsException, MyConstraintViolationException{
+        try {
+          
+            Administrador administrador = em.find(Administrador.class, administradorDTO.getId());
+            if (administrador == null) {
+                throw new EntityDoesNotExistsException("There is no administrador with that username.");
+            }
+
+            administrador.setPassword(administradorDTO.getPassword());
+            administrador.setName(administradorDTO.getName());
+            
+            em.merge(administrador);       
+        } catch (EntityDoesNotExistsException e) {
+            throw e;
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));            
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
     
-    private List<AdministradorDTO> getAdministradorDTOS(List<Administrador> admnistradores){
+       public List<AdministradorDTO> getAllAdministradores() {
+        try {
+            List<Administrador> administradores = em.createNamedQuery("getAllAdministradores").getResultList();
+            return getAdministradorDTOS(administradores);
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
+
+     
+    //AUXILIARES
+   private List<AdministradorDTO> getAdministradorDTOS(List<Administrador> admnistradores){
         List<AdministradorDTO> administradorDTOs = new ArrayList<>();
         
         for(Administrador administrador : admnistradores){
@@ -68,6 +105,8 @@ public class AdministradorBean {
     private AdministradorDTO transformDTO(Administrador administrador) {
        return new AdministradorDTO(administrador.getId(), administrador.getName(), null);
     }
+    
+    
     
     
     
