@@ -34,6 +34,17 @@ public class MaterialDeCapacitacao implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+    
+    public MaterialDeCapacitacao(){
+        
+    }
+    
+    public MaterialDeCapacitacao(Long id,SuporteMaterialDeCapacitacao suporte, TipoMaterialDeCapacitacao tipo,String link){
+        this.id = id;
+        this.suporte = suporte;
+        this.tipoSuporte = tipo;
+        this.link = link;
+    }
 
     @Override
     public String toString() {
