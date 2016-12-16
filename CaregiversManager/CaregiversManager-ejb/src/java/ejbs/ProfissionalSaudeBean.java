@@ -4,9 +4,8 @@
  * and open the template in the editor.
  */
 package ejbs;
-
-import dtos.AdministradorDTO;
-import entities.Administrador;
+import dtos.ProfissionalSaudeDTO;
+import entities.ProfissionalSaude;
 import exceptions.EntityDoesNotExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
@@ -18,34 +17,35 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
+
 /**
  *
  * @author joaos
  */
 @Stateless
-public class AdministradorBean {
-    
+public class ProfissionalSaudeBean {
+
     @PersistenceContext
     private EntityManager em;
     
     public void create(String username, String name, String password) {
         try {
-            if (em.find(Administrador.class, username) != null) {
+            if (em.find(ProfissionalSaude.class, username) != null) {
                 return;
             }
-            em.persist(new Administrador(username, name, password));
+            em.persist(new ProfissionalSaude(username, name, password));
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
     }
     
-    public AdministradorDTO getAdministrador(String username) {
+    public ProfissionalSaudeDTO getProfissionalSaude(String username) {
         try {
-            Administrador administrador = em.find(Administrador.class, username);
-            if (administrador == null) {
+            ProfissionalSaude profissional = em.find(ProfissionalSaude.class, username);
+            if (profissional == null) {
                 throw new EntityDoesNotExistsException("There is no Administrador with that username");
             }
-            return transformDTO(administrador);
+            return transformDTO(profissional);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -53,30 +53,30 @@ public class AdministradorBean {
     
     public void remove(String username) {
         try {
-            Administrador administrador = em.find(Administrador.class, username);
-            if (administrador == null) {
+            ProfissionalSaude profissional = em.find(ProfissionalSaude.class, username);
+            if (profissional == null) {
                 throw new EntityDoesNotExistsException("There is no Administrador with that id.");
             }
-            em.remove(administrador);
+            em.remove(profissional);
             
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
     }
     
-    public void update(AdministradorDTO administradorDTO)
+    public void update(ProfissionalSaudeDTO profissionalSaudeDTO)
             throws EntityDoesNotExistsException, MyConstraintViolationException {
         try {
             
-            Administrador administrador = em.find(Administrador.class, administradorDTO.getUsername());
-            if (administrador == null) {
+            ProfissionalSaude profissional = em.find(ProfissionalSaude.class, profissionalSaudeDTO.getUsername());
+            if (profissional == null) {
                 throw new EntityDoesNotExistsException("There is no administrador with that username.");
             }
             
-            administrador.setPassword(administradorDTO.getPassword());
-            administrador.setName(administradorDTO.getName());
+            profissional.setPassword(profissionalSaudeDTO.getPassword());
+            profissional.setName(profissionalSaudeDTO.getName());
             
-            em.merge(administrador);
+            em.merge(profissional);
         } catch (EntityDoesNotExistsException e) {
             throw e;
         } catch (ConstraintViolationException e) {
@@ -87,10 +87,10 @@ public class AdministradorBean {
     }
     
     
-    public List<AdministradorDTO> getAllAdministradores() {
+    public List<ProfissionalSaudeDTO> getAllAdministradores() {
         try {
-            List<Administrador> administradores = em.createNamedQuery("getAllAdministradores").getResultList();
-            return getAdministradorDTOS(administradores);
+            List<ProfissionalSaude> administradores = em.createNamedQuery("getAllAdministradores").getResultList();
+            return getProfissionalSaudeDTOS(administradores);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -99,18 +99,18 @@ public class AdministradorBean {
     
 
     //AUXILIARES
-    private List<AdministradorDTO> getAdministradorDTOS(List<Administrador> admnistradores) {
-        List<AdministradorDTO> administradorDTOs = new ArrayList<>();
+    private List<ProfissionalSaudeDTO> getProfissionalSaudeDTOS(List<ProfissionalSaude> profissionais) {
+        List<ProfissionalSaudeDTO> profissionaisDTOs = new ArrayList<>();
         
-        for (Administrador administrador : admnistradores) {
-            administradorDTOs.add(transformDTO(administrador));
+        for (ProfissionalSaude profissional : profissionais) {
+            profissionaisDTOs.add(transformDTO(profissional));
         }
-        return administradorDTOs;
+        return profissionaisDTOs;
         
     }
     
-    private AdministradorDTO transformDTO(Administrador administrador) {
-        return new AdministradorDTO(administrador.getUsername(), administrador.getName(), null);
+    private ProfissionalSaudeDTO transformDTO(ProfissionalSaude profissional) {
+        return new ProfissionalSaudeDTO(profissional.getUsername(), profissional.getName(), null);
     }
     
 }

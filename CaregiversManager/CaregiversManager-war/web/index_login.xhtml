@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    
+
+    <p:growl widgetVar="growl" showDetail="true" />
+
+    <h:form>
+        <h:panelGrid columns="2">
+            <p:outputLabel for="username" value="Username:  " /> 
+            <p:inputText id="username" value="" required="true" />
+            <p:message for="username" display="text" />
+            
+            <h/>
+            <p:outputLabel for="password" value="Password:  " /> 
+            <p:password id="password" required="true" />
+            <p:message for="password" display="text" />
+        </h:panelGrid>
+
+        <p:commandButton value="Send" />
+    </h:form>
+
+    </html>

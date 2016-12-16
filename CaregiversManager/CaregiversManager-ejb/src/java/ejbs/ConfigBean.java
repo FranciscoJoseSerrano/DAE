@@ -5,9 +5,7 @@
  */
 package ejbs;
 
-import exceptions.EntityAlreadyExistsException;
-import exceptions.EntityDoesNotExistsException;
-import exceptions.MyConstraintViolationException;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -25,13 +23,18 @@ public class ConfigBean {
     // "Insert Code > Add Business Method")
     @EJB
     private AdministradorBean administradorBean;
+    
+    @EJB
+    private ProfissionalSaudeBean profissionalBean;
 
     @PostConstruct
     public void populateBD() {
 
-        administradorBean.create(0, "João Serrano", "joaoreidaselvaedomundo123");
-        administradorBean.create(1, "João Serrano o Rei da Selva", "joaorei");
-        administradorBean.create(7, "Numero Perfeito", "PerfeitoSoueu");
+        administradorBean.create("baby", "João Serrano", "joaoreidaselvaedomundo123");
+        administradorBean.create("baby2", "João Serrano o Rei da Selva", "joaorei");
+        administradorBean.create("baby7", "Numero Perfeito", "PerfeitoSoueu");
+        
+        profissionalBean.create("babyboo", "João Rei", "joaoomaiordestemundoonossorei");
 
     }
 }

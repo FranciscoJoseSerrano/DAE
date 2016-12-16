@@ -5,7 +5,6 @@
  */
 package dtos;
 
-import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -14,18 +13,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author joaos
  */
-@XmlRootElement(name = "Administrador")
+@XmlRootElement(name = "ProfissionalSaude")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AdministradorDTO implements Serializable {
-
+public class ProfissionalSaudeDTO {
     protected String username;
     protected String password;
     protected String name;
 
-    public AdministradorDTO() {
+    public ProfissionalSaudeDTO() {
     }
 
-    public AdministradorDTO(String username, String name, String password) {
+    public ProfissionalSaudeDTO(String username, String name, String password) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -61,5 +59,4 @@ public class AdministradorDTO implements Serializable {
         setName(null);
 
     }
-
 }

@@ -26,9 +26,9 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "getAllAdministradores",
-            query = "SELECT s FROM Administrador s ORDER BY s.name")})
-public class Administrador implements Serializable {
+    @NamedQuery(name = "getAllProfissionais",
+            query = "SELECT s FROM ProfissionalSaude s ORDER BY s.name")})
+public class ProfissionalSaude implements Serializable {
 
     @Id
     private String username;
@@ -39,14 +39,29 @@ public class Administrador implements Serializable {
     @NotNull
     private String password;
 
-    public Administrador() {
+    public ProfissionalSaude() {
 
     }
 
-    public Administrador(String username, String name, String password) {
+    public ProfissionalSaude(String username, String name, String password) {
         this.username = username;
         this.name = name;
         this.password = hashPassword(password);
+    }
+
+    private String hashPassword(String password) {
+        char[] encoded = null;
+        try {
+            ByteBuffer passwdBuffer
+                    = Charset.defaultCharset().encode(CharBuffer.wrap(password));
+            byte[] passwdBytes = passwdBuffer.array();
+            MessageDigest mdEnc = MessageDigest.getInstance("SHA-256");
+            mdEnc.update(passwdBytes, 0, password.toCharArray().length);
+            encoded = new BigInteger(1, mdEnc.digest()).toString(16).toCharArray();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new String(encoded);
     }
 
     public String getUsername() {
@@ -71,21 +86,6 @@ public class Administrador implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    private String hashPassword(String password) {
-        char[] encoded = null;
-        try {
-            ByteBuffer passwdBuffer
-                    = Charset.defaultCharset().encode(CharBuffer.wrap(password));
-            byte[] passwdBytes = passwdBuffer.array();
-            MessageDigest mdEnc = MessageDigest.getInstance("SHA-256");
-            mdEnc.update(passwdBytes, 0, password.toCharArray().length);
-            encoded = new BigInteger(1, mdEnc.digest()).toString(16).toCharArray();
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return new String(encoded);
     }
 
 }
