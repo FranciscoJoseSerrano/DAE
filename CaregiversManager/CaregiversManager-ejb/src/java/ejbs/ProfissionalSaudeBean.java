@@ -17,7 +17,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
-
 /**
  *
  * @author joaos
@@ -43,7 +42,7 @@ public class ProfissionalSaudeBean {
         try {
             ProfissionalSaude profissional = em.find(ProfissionalSaude.class, username);
             if (profissional == null) {
-                throw new EntityDoesNotExistsException("There is no Administrador with that username");
+                throw new EntityDoesNotExistsException("Não existe nenhum Profissional de Saúde com esse username");
             }
             return transformDTO(profissional);
         } catch (Exception e) {
@@ -55,7 +54,7 @@ public class ProfissionalSaudeBean {
         try {
             ProfissionalSaude profissional = em.find(ProfissionalSaude.class, username);
             if (profissional == null) {
-                throw new EntityDoesNotExistsException("There is no Administrador with that id.");
+                throw new EntityDoesNotExistsException("Não existe nenhum Profissional de Saúde com esse username");
             }
             em.remove(profissional);
             
@@ -70,7 +69,7 @@ public class ProfissionalSaudeBean {
             
             ProfissionalSaude profissional = em.find(ProfissionalSaude.class, profissionalSaudeDTO.getUsername());
             if (profissional == null) {
-                throw new EntityDoesNotExistsException("There is no administrador with that username.");
+                throw new EntityDoesNotExistsException("Não existe nenhum Profissional de Saúde com esse username");
             }
             
             profissional.setPassword(profissionalSaudeDTO.getPassword());
@@ -89,8 +88,8 @@ public class ProfissionalSaudeBean {
     
     public List<ProfissionalSaudeDTO> getAllAdministradores() {
         try {
-            List<ProfissionalSaude> administradores = em.createNamedQuery("getAllAdministradores").getResultList();
-            return getProfissionalSaudeDTOS(administradores);
+            List<ProfissionalSaude> profissionais = em.createNamedQuery("getAllProfissionais").getResultList();
+            return getProfissionalSaudeDTOS(profissionais);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }

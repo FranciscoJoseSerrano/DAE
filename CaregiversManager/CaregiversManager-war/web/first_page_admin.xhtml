@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Bem Vindo!</title>
+    </h:head>
+    <title>Bem Vindo!</title>
+    <h:body>
+        <h:dataTable
+            var="administrador"
+            summary="Todos os Administradores"
+            value="#{administratorManager.allAdministradores}"
+            rules="all"
+            cellpadding="5">
+
+            <f:facet name="header">
+                <h:outputText value="Administradores" />
+            </f:facet>            
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Username" />
+                </f:facet>
+                <h:outputText value="#{administrador.username}" />
+                <!--Falta validar o formato-->
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Name" />
+                </f:facet>
+                <h:outputText value="#{administrador.name}" />
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Actions" />
+                </f:facet>
+                <h:form>
+                    <h:commandLink value="Details" action="administrador_detalhes?faces-redirect=true">
+                        <f:setPropertyActionListener target="#{administratorManager.currentAdministrador}" value="#{administrador}" />
+                    </h:commandLink>
+                    &nbsp;
+                    <h:commandLink value="Update" action="administrador_update?faces-redirect=true">
+                        <f:setPropertyActionListener target="#{administratorManager.currentAdministrador}" value="#{administrador}" />
+                    </h:commandLink>
+                    &nbsp;
+                    <h:commandLink value="Remove" actionListener="#{administratorManager.removerAdministrador}">
+                        <f:param name="administradorUsername" id="administradorUsername" value="#{administrador.username}" />
+                    </h:commandLink>
+                </h:form>
+            </h:column>   
+        </h:dataTable>
+
+        <h:form>
+            <h:inputText 
+                id="input1"
+                size="52"
+                required="true"
+                requiredMessage="Error: Name cannot be empty."     
+                binding="#{input1}"
+                />
+
+            <h:commandButton
+                id="submit"
+                value="Procurar"
+                action="#{administratorManager.verificarAdmin(input1.value)}" 
+                >             
+                
+                <f:setPropertyActionListener target="#{administratorManager.currentAdministrador}" value="#{administratorManager.procurarAdministrador(input1.value)}"/>
+            
+            </h:commandButton>
+            
+        </h:form>
+    </h:body>
+</html>
+

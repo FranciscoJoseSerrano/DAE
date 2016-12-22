@@ -42,13 +42,15 @@ public class AdministradorBean {
     public AdministradorDTO getAdministrador(String username) {
         try {
             Administrador administrador = em.find(Administrador.class, username);
-            if (administrador == null) {
-                throw new EntityDoesNotExistsException("There is no Administrador with that username");
+            if (administrador == null) {           
+                return null;
             }
             return transformDTO(administrador);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
+        
+      
     }
     
     public void remove(String username) {
