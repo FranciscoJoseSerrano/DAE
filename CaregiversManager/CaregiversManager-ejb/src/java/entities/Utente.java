@@ -26,12 +26,12 @@ import javax.persistence.ManyToOne;
 public class Utente implements Serializable {
     
     @Id
-    private String name;
+    private String nome;
     
     @ManyToOne
     @JoinColumn(name = "PROFISSIONALSAUDE_CODE")
     private ProfissionalSaude profissional;
-    
+  
     @ManyToOne
     @JoinColumn(name = "CUIDADOR_CODE")
     private Cuidador cuidador;
@@ -44,18 +44,18 @@ public class Utente implements Serializable {
         this.cuidador = cuidador;
     }
     
-    public Utente(String name){
-        this.name = name;
+    public Utente(String nome){
+        this.nome = nome;
         this.cuidador = null;
     }
 
     
     public String getName() {
-        return name;
+        return nome;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String nome) {
+        this.nome = nome;
     }
     
     public Cuidador getCuidador(){

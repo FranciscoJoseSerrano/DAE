@@ -37,34 +37,32 @@ public class AdministratorManager implements Serializable {
     private AdministradorDTO currentAdministrador;
     private AdministradorDTO newAdministrador;
 
-   
-    
-    
     private UIComponent component;
-
-    public UIComponent getComponent() {
-        return component;
-    }
-
-    public void setComponent(UIComponent component) {
-        this.component = component;
-    }
 
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
 
     //////ADMINISTRADOR/////////
     public AdministratorManager() {
+        newAdministrador = new AdministradorDTO();
     }
-    
-    public String createAdministrador(){
-        try{
-            administradorBean.create(newAdministrador.getUsername(), newAdministrador.getName(), newAdministrador.getPassword());
-            newAdministrador.reset();
-            return "first_page_admin?faces-redirect=true";
+
+    public String createAdministrador() {
+        try {
+            if (!existeAdmin(newAdministrador.getUsername())) {
+                administradorBean.create(newAdministrador.getUsername(), newAdministrador.getNome(), newAdministrador.getPassword());
+                newAdministrador.reset();
+                return "first_page_admin?faces-redirect=true";
+            }
+
+            FacesContext.getCurrentInstance().addMessage("myAdmin:username", new FacesMessage("Erro: Já existe um Administrador com esse username"));
+
+            return "administrador_criar?faces-redirect=true";
+
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            return null;
         }
-        return null;
+
     }
 
     public List<AdministradorDTO> getAllAdministradores() {
@@ -105,9 +103,9 @@ public class AdministratorManager implements Serializable {
             this.currentAdministrador = administradorBean.getAdministrador(username);
             if (currentAdministrador != null) {
                 return currentAdministrador;
-                
+
             } else {
-                
+
                 return null;
             }
 
@@ -116,16 +114,21 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-    
-    public String verificarAdmin(String username){
 
-         AdministradorDTO administradorAux = procurarAdministrador(username);
-         if (administradorAux != null){
-             return "administrador_detalhes?faces-redirect=true";
-         }
-         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Mensagem de erro", "Não foi encontrado utilizador!"));
-         return "first_page_admin";
-         
+    public String verificarAdmin(String username) {
+
+        if (existeAdmin(username)) {
+            return "administrador_detalhes?faces-redirect=true";
+        }
+
+        FacesContext.getCurrentInstance().addMessage("myForm:input1", new FacesMessage("Erro: Não existe nenhum Administrador com esse Username"));
+        return "first_page_admin";
+
+    }
+
+    public boolean existeAdmin(String username) {
+        AdministradorDTO administradorAux = procurarAdministrador(username);
+        return administradorAux != null;
     }
 
     public AdministradorDTO getCurrentAdministrador() {
@@ -135,8 +138,8 @@ public class AdministratorManager implements Serializable {
     public void setCurrentAdministrador(AdministradorDTO currentAdministrador) {
         this.currentAdministrador = currentAdministrador;
     }
-    
-     public AdministradorDTO getNewAdministrador() {
+
+    public AdministradorDTO getNewAdministrador() {
         return newAdministrador;
     }
 
@@ -145,4 +148,11 @@ public class AdministratorManager implements Serializable {
     }
 
     ////////////////FIM DE ADMINISTRADOR//////////////
+    public UIComponent getComponent() {
+        return component;
+    }
+
+    public void setComponent(UIComponent component) {
+        this.component = component;
+    }
 }

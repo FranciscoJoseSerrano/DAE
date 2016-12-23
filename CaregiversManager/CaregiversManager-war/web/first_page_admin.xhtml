@@ -55,7 +55,7 @@
             </h:column>   
         </h:dataTable>
 
-        <h:form>
+        <h:form id="myForm">
             <h:inputText 
                 id="input1"
                 size="52"
@@ -69,12 +69,51 @@
                 value="Procurar"
                 action="#{administratorManager.verificarAdmin(input1.value)}" 
                 >             
-                
+
                 <f:setPropertyActionListener target="#{administratorManager.currentAdministrador}" value="#{administratorManager.procurarAdministrador(input1.value)}"/>
-            
+
             </h:commandButton>
-            
+
+
         </h:form>
+        
+        <h:message for="input1" id="semAdministrador" errorStyle="color:red"/>
+        
+        <h:form>
+            <h:commandButton
+                id="create"
+                value="Criar um novo Administrador"
+                action="administrador_criar?faces-redirect=true"
+                />
+        </h:form>
+         
+        <br/>
+        <br/>       
+        
+      <!--  <h:dataTable
+            var="course"
+            summary="List of all courses"
+            value="#{administratorManager.allCourses}"
+            rules="all"
+            cellpadding="5">
+
+            <f:facet name="header">
+                <h:outputText value="Courses" />
+            </f:facet>                        
+            
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Code" />
+                </f:facet>
+                <h:outputText value="#{course.code}" />
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Name" />
+                </f:facet>
+                <h:outputText value="#{course.name}" />
+            </h:column>-->
     </h:body>
 </html>
 

@@ -8,66 +8,30 @@ package entities;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotNull;
+import javax.persistence.OneToMany;
 
 /**
  *
  * @author joaos
  */
 @Entity
-public class Cuidador implements Serializable {
+public class Cuidador extends Utilizador implements Serializable {
 
-
-    @Id
-    private String username;
-    @NotNull
-    private String password;
-    
-    @ManyToMany
-    @JoinTable(name = "CUIDADOR_UTENTE",
-            joinColumns
-            = @JoinColumn(name = "CUIDADOR_USERNAME", referencedColumnName = "USERNAME"),
-            inverseJoinColumns
-            = @JoinColumn(name = "UTENTE_NAME", referencedColumnName = "NAME"))
+    @OneToMany(mappedBy = "cuidador", cascade = CascadeType.REMOVE)
     private List<Utente> listUtentes;
     
     public Cuidador(){
-        
+        this.listUtentes = new LinkedList<>();
     }
 
-    public Cuidador(String nome, String password) {
-        this.username = nome;
-        this.password = password;
+    public Cuidador(String username, String nome ,String password) {
+        super(username,password, nome);
         listUtentes = new LinkedList<>();
     }
    
   
-    @Override
-    public String toString() {
-        return username;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public List<Utente> getMyUtentes() {
         return listUtentes;
     }
