@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -17,6 +19,9 @@ import javax.persistence.OneToMany;
  * @author joaos
  */
 @Entity
+@NamedQueries({
+@NamedQuery(name = "getAllCuidadores",
+    query = "SELECT s FROM Cuidador s")})
 public class Cuidador extends Utilizador implements Serializable {
 
     @OneToMany(mappedBy = "cuidador", cascade = CascadeType.REMOVE)
