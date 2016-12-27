@@ -19,7 +19,8 @@ public class Cuidador implements Serializable {
     private String username;
     @NotNull
     private String password;
-    @NotNUll
+    
+    @NotNull
     private String nome;
 
     @OneToMany(mappedBy = "cuidador", cascade = CascadeType.REMOVE)
