@@ -5,6 +5,7 @@
  */
 package dtos;
 
+import entities.Utilizador;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -14,15 +15,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author joaos
  */
-@XmlRootElement(name = "Administrador")
+@XmlRootElement(name = "Cuidador")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AdministradorDTO extends UtilizadorDTO implements Serializable {
-
-
-    public AdministradorDTO() {
+public class CuidadorDTO extends UtilizadorDTO implements Serializable {
+    
+      
+    public CuidadorDTO(){
+        
     }
-
-    public AdministradorDTO(String username, String nome, String password) {
+    
+    public CuidadorDTO(String username, String password, String nome){
         super(username, password, nome);
     }
 
@@ -30,7 +32,7 @@ public class AdministradorDTO extends UtilizadorDTO implements Serializable {
     public void reset() {
         super.reset(); //To change body of generated methods, choose Tools | Templates.
     }
-
     
-
+    
+    
 }

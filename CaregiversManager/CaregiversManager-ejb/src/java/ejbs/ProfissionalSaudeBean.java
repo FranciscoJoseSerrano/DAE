@@ -73,7 +73,7 @@ public class ProfissionalSaudeBean {
             }
             
             profissional.setPassword(profissionalSaudeDTO.getPassword());
-            profissional.setName(profissionalSaudeDTO.getName());
+            profissional.setName(profissionalSaudeDTO.getNome());
             
             em.merge(profissional);
         } catch (EntityDoesNotExistsException e) {

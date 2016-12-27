@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package entities;
 
 import java.io.Serializable;
@@ -50,6 +46,10 @@ public class Cuidador implements Serializable {
         this.password = password;
         utentes = new LinkedList<>();
     }
+
+    public Cuidador(String username, String nome, String password) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
    
   
     @Override
@@ -93,6 +93,14 @@ public class Cuidador implements Serializable {
 
     public void setProcedimentosAplicados(LinkedList<ProcedimentoAplicado> procedimentosAplicados) {
         this.procedimentosAplicados = procedimentosAplicados;
+    }
+
+    public void setName(String nome) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 

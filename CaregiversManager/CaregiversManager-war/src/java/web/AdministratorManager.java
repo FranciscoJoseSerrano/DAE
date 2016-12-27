@@ -6,8 +6,9 @@
 package web;
 
 import dtos.AdministradorDTO;
+import dtos.CuidadorDTO;
 import ejbs.AdministradorBean;
-import exceptions.EntityAlreadyExistsException;
+import ejbs.CuidadorBean;
 import exceptions.EntityDoesNotExistsException;
 import exceptions.MyConstraintViolationException;
 import javax.inject.Named;
@@ -37,34 +38,38 @@ public class AdministratorManager implements Serializable {
     private AdministradorDTO currentAdministrador;
     private AdministradorDTO newAdministrador;
 
-   
-    
-    
+    @EJB
+    private CuidadorBean cuidadorBean;
+    private CuidadorDTO newCuidador;
+    private CuidadorDTO currentCuidador;
+
     private UIComponent component;
-
-    public UIComponent getComponent() {
-        return component;
-    }
-
-    public void setComponent(UIComponent component) {
-        this.component = component;
-    }
 
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
 
     //////ADMINISTRADOR/////////
     public AdministratorManager() {
+        newAdministrador = new AdministradorDTO();
+        newCuidador = new CuidadorDTO();
     }
-    
-    public String createAdministrador(){
-        try{
-            administradorBean.create(newAdministrador.getUsername(), newAdministrador.getName(), newAdministrador.getPassword());
-            newAdministrador.reset();
-            return "first_page_admin?faces-redirect=true";
+
+    public String createAdministrador() {
+        try {
+            if (!existeAdmin(newAdministrador.getUsername())) {
+                administradorBean.create(newAdministrador.getUsername(), newAdministrador.getNome(), newAdministrador.getPassword());
+                newAdministrador.reset();
+                return "first_page_admin?faces-redirect=true";
+            }
+
+            FacesContext.getCurrentInstance().addMessage("myAdmin:username", new FacesMessage("Erro: Já existe um Administrador com esse username"));
+
+            return "administrador_criar?faces-redirect=true";
+
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            return null;
         }
-        return null;
+
     }
 
     public List<AdministradorDTO> getAllAdministradores() {
@@ -105,9 +110,9 @@ public class AdministratorManager implements Serializable {
             this.currentAdministrador = administradorBean.getAdministrador(username);
             if (currentAdministrador != null) {
                 return currentAdministrador;
-                
+
             } else {
-                
+
                 return null;
             }
 
@@ -116,16 +121,21 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-    
-    public String verificarAdmin(String username){
 
-         AdministradorDTO administradorAux = procurarAdministrador(username);
-         if (administradorAux != null){
-             return "administrador_detalhes?faces-redirect=true";
-         }
-         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Mensagem de erro", "Não foi encontrado utilizador!"));
-         return "first_page_admin";
-         
+    public String verificarAdmin(String username) {
+
+        if (existeAdmin(username)) {
+            return "administrador_detalhes?faces-redirect=true";
+        }
+
+        FacesContext.getCurrentInstance().addMessage("myForm:input1", new FacesMessage("Erro: Não existe nenhum Administrador com esse Username"));
+        return "first_page_admin";
+
+    }
+
+    public boolean existeAdmin(String username) {
+        AdministradorDTO administradorAux = procurarAdministrador(username);
+        return administradorAux != null;
     }
 
     public AdministradorDTO getCurrentAdministrador() {
@@ -135,8 +145,8 @@ public class AdministratorManager implements Serializable {
     public void setCurrentAdministrador(AdministradorDTO currentAdministrador) {
         this.currentAdministrador = currentAdministrador;
     }
-    
-     public AdministradorDTO getNewAdministrador() {
+
+    public AdministradorDTO getNewAdministrador() {
         return newAdministrador;
     }
 
@@ -145,4 +155,109 @@ public class AdministratorManager implements Serializable {
     }
 
     ////////////////FIM DE ADMINISTRADOR//////////////
+    //////CUIDADOR///////
+    public List<CuidadorDTO> getAllCuidadores() {
+        try {
+            return cuidadorBean.getCuidadores();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+
+    public String createCuidador() {
+        try {
+            if (!cuidadorBean.existsCuidador(newCuidador.getUsername())) {
+                cuidadorBean.create(newCuidador.getUsername(), newCuidador.getNome(), newCuidador.getPassword());
+                newCuidador.reset();
+                return "cuidador_todos?faces-redirect=true";
+            }
+
+            FacesContext.getCurrentInstance().addMessage("myAdmin:username", new FacesMessage("Erro: Já existe um Cuidador com esse username"));
+
+            return "cuidador_criar?faces-redirect=true";
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            return null;
+        }
+    }
+
+    public CuidadorDTO getNewCuidador() {
+        return newCuidador;
+    }
+
+    public void removerCuidador(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("cuidadorUsername");
+            String username = param.getValue().toString();
+            cuidadorBean.remove(username);
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Ocorreu um erro ! Tente mais tarde", logger);
+        }
+    }
+
+    public void setCurrentCuidador(CuidadorDTO currentCuidador) {
+        this.currentCuidador = currentCuidador;
+    }
+
+    public CuidadorDTO getCurrentCuidador() {
+        return currentCuidador;
+    }
+
+    public String updateCuidador(CuidadorDTO c) {
+        try {
+            cuidadorBean.update(c);
+            return "cuidador_detalhes?faces-redirect=true";
+        } catch (EntityDoesNotExistsException | MyConstraintViolationException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
+        }
+        return "administrador_update";
+    }
+
+    public String verificarCuidador(String username) {
+
+        if (existeCuidador(username)) {
+            return "cuidador_detalhes?faces-redirect=true";
+        }
+
+        FacesContext.getCurrentInstance().addMessage("procurarCuidadorForm:inputProcurarCuidador", new FacesMessage("Erro: Não existe nenhum Cuidador com esse Username"));
+        return "cuidador_todos";
+
+    }
+
+    public boolean existeCuidador(String username) {
+        CuidadorDTO cuidadorAux = procurarCuidador(username);
+        return cuidadorAux != null;
+    }
+
+    public CuidadorDTO procurarCuidador(String username) {
+        try {
+
+            this.currentCuidador = cuidadorBean.getCuidador(username);
+            if (this.currentCuidador != null) {
+                return currentCuidador;
+
+            } else {
+
+                return null;
+            }
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
+            return null;
+        }
+    }
+
+    //////////////FIM DE CUIDADOR//////////////
+    public UIComponent getComponent() {
+        return component;
+    }
+
+    public void setComponent(UIComponent component) {
+        this.component = component;
+    }
 }

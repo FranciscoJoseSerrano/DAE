@@ -76,7 +76,7 @@ public class AdministradorBean {
             }
             
             administrador.setPassword(administradorDTO.getPassword());
-            administrador.setName(administradorDTO.getName());
+            administrador.setName(administradorDTO.getNome());
             
             em.merge(administrador);
         } catch (EntityDoesNotExistsException e) {

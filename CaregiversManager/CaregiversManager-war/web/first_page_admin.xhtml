@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Bem Vindo!</title>
     </h:head>
@@ -32,7 +32,7 @@
                 <f:facet name="header">
                     <h:outputText value="Name" />
                 </f:facet>
-                <h:outputText value="#{administrador.name}" />
+                <h:outputText value="#{administrador.nome}" />
             </h:column>
 
             <h:column>
@@ -54,8 +54,14 @@
                 </h:form>
             </h:column>   
         </h:dataTable>
-
         <h:form>
+        <h:commandButton
+                id="cuidatoresDetalhes"
+                value="Ver Cuidadores"
+                action="cuidador_todos?faces-redirect=true"
+                />
+        </h:form>
+        <h:form id="myForm">
             <h:inputText 
                 id="input1"
                 size="52"
@@ -69,12 +75,23 @@
                 value="Procurar"
                 action="#{administratorManager.verificarAdmin(input1.value)}" 
                 >             
-                
                 <f:setPropertyActionListener target="#{administratorManager.currentAdministrador}" value="#{administratorManager.procurarAdministrador(input1.value)}"/>
-            
-            </h:commandButton>
+            </h:commandButton> 
             
         </h:form>
+        
+        <h:message for="input1" id="semAdministrador" errorStyle="color:red"/>
+        
+        <h:form>
+            <h:commandButton
+                id="create"
+                value="Criar um novo Administrador"
+                action="administrador_criar?faces-redirect=true"
+                />
+        </h:form>
+         
+        <br/>
+        <br/>       
     </h:body>
 </html>
 
