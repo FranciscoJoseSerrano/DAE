@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,6 +24,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -44,23 +46,18 @@ public class ProfissionalSaude implements Serializable {
     @NotNull
     private String password;
     
-    @ManyToMany
-    @JoinTable(name = "PROFISSIONAL_UTENTES",
-            joinColumns
-            = @JoinColumn(name = "PROFISSIONALSAUDE_USERANAME", referencedColumnName = "USERNAME"),
-            inverseJoinColumns
-            = @JoinColumn(name = "UTENTE_NAME", referencedColumnName = "NAME"))
-    private List<Utente> listUtentes;
+   @OneToMany(mappedBy = "profissional", cascade = CascadeType.REMOVE)
+    private List<Utente> utentes;
 
     public ProfissionalSaude() {
-        listUtentes = new LinkedList<>();
+        utentes = new LinkedList<>();
     }
 
     public ProfissionalSaude(String username, String name, String password) {
         this.username = username;
         this.name = name;
         this.password = hashPassword(password);
-        listUtentes = new LinkedList<>();
+        utentes = new LinkedList<>();
     }
 
     private String hashPassword(String password) {

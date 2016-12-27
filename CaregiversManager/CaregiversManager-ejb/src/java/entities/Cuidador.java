@@ -8,11 +8,14 @@ package entities;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -28,13 +31,15 @@ public class Cuidador implements Serializable {
     @NotNull
     private String password;
     
-    @ManyToMany
-    @JoinTable(name = "CUIDADOR_UTENTE",
-            joinColumns
-            = @JoinColumn(name = "CUIDADOR_USERNAME", referencedColumnName = "USERNAME"),
-            inverseJoinColumns
-            = @JoinColumn(name = "UTENTE_NAME", referencedColumnName = "NAME"))
-    private List<Utente> listUtentes;
+   
+    @OneToMany(mappedBy = "cuidador", cascade = CascadeType.REMOVE)
+    private LinkedList<Utente> utentes;
+    
+    
+    @OneToMany(mappedBy = "cuidador", cascade=CascadeType.REMOVE)         
+    LinkedList<ProcedimentoAplicado> procedimentosAplicados;
+
+
     
     public Cuidador(){
         
@@ -43,7 +48,7 @@ public class Cuidador implements Serializable {
     public Cuidador(String nome, String password) {
         this.username = nome;
         this.password = password;
-        listUtentes = new LinkedList<>();
+        utentes = new LinkedList<>();
     }
    
   
@@ -68,15 +73,28 @@ public class Cuidador implements Serializable {
         this.password = password;
     }
 
-    public List<Utente> getMyUtentes() {
-        return listUtentes;
+    public LinkedList<Utente> getMyUtentes() {
+        return utentes;
     }
     
     public void addUtente(Utente utente){
-        listUtentes.add(utente);
+        utentes.add(utente);
+    }
+    
+        public LinkedList<Utente> getUtentes() {
+        return utentes;
     }
 
- /*   public void setUtentes(LinkedList<Utente> utentes) {
-        this.utentes = utentes;
-    }*/
+
+
+    public LinkedList<ProcedimentoAplicado> getProcedimentosAplicados() {
+        return procedimentosAplicados;
+    }
+
+    public void setProcedimentosAplicados(LinkedList<ProcedimentoAplicado> procedimentosAplicados) {
+        this.procedimentosAplicados = procedimentosAplicados;
+    }
+    
+
+   
 }

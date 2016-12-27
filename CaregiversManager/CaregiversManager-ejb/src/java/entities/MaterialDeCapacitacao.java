@@ -6,8 +6,12 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /**
  *
@@ -17,25 +21,22 @@ import javax.persistence.Id;
 public class MaterialDeCapacitacao implements Serializable {
 
     @Id
-    private Long id;
-    
-    private SuporteMaterialDeCapacitacao suporte;
-    
-    private TipoMaterialDeCapacitacao tipoSuporte;
-    
-    private String link;
-    
+    private Long id;   
+    private SuporteMaterialDeCapacitacao suporte;   
+    private TipoMaterialDeCapacitacao tipoSuporte;  
+    private String link;   
     private byte[] conteudo;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
     
-    public MaterialDeCapacitacao(){
+    
+   @ManyToMany
+    @JoinTable(name = "NECESSIDADE_MATERIAL",
+            joinColumns
+            = @JoinColumn(name = "NECESSIDADE_CODE", referencedColumnName = "ID"),
+            inverseJoinColumns
+            = @JoinColumn(name = "MATERIAL_CODE", referencedColumnName = "ID"))
+   private LinkedList<Necessidade> necessidades;
+   
+   public MaterialDeCapacitacao(){
         
     }
     
@@ -44,7 +45,17 @@ public class MaterialDeCapacitacao implements Serializable {
         this.suporte = suporte;
         this.tipoSuporte = tipo;
         this.link = link;
+        this.necessidades=new LinkedList<>();
     }
+    
+     public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
 
     @Override
     public String toString() {
