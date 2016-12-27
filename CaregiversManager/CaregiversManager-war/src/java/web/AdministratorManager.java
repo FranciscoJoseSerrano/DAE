@@ -155,7 +155,6 @@ public class AdministratorManager implements Serializable {
     }
 
     ////////////////FIM DE ADMINISTRADOR//////////////
-    
     //////CUIDADOR///////
     public List<CuidadorDTO> getAllCuidadores() {
         try {
@@ -206,7 +205,7 @@ public class AdministratorManager implements Serializable {
     public CuidadorDTO getCurrentCuidador() {
         return currentCuidador;
     }
-    
+
     public String updateCuidador(CuidadorDTO c) {
         try {
             cuidadorBean.update(c);
@@ -218,7 +217,40 @@ public class AdministratorManager implements Serializable {
         }
         return "administrador_update";
     }
-    
+
+    public String verificarCuidador(String username) {
+
+        if (existeCuidador(username)) {
+            return "cuidador_detalhes?faces-redirect=true";
+        }
+
+        FacesContext.getCurrentInstance().addMessage("procurarCuidadorForm:inputProcurarCuidador", new FacesMessage("Erro: Não existe nenhum Cuidador com esse Username"));
+        return "cuidador_todos";
+
+    }
+
+    public boolean existeCuidador(String username) {
+        CuidadorDTO cuidadorAux = procurarCuidador(username);
+        return cuidadorAux != null;
+    }
+
+    public CuidadorDTO procurarCuidador(String username) {
+        try {
+
+            this.currentCuidador = cuidadorBean.getCuidador(username);
+            if (this.currentCuidador != null) {
+                return currentCuidador;
+
+            } else {
+
+                return null;
+            }
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
+            return null;
+        }
+    }
 
     //////////////FIM DE CUIDADOR//////////////
     public UIComponent getComponent() {

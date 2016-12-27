@@ -37,7 +37,7 @@
                 <f:facet name="header">
                     <h:outputText value="Actions" />
                 </f:facet>
-                   <h:form>
+                <h:form>
                     <h:commandLink value="Details" action="cuidador_detalhes?faces-redirect=true">
                         <f:setPropertyActionListener target="#{administratorManager.currentCuidador}" value="#{cuidador}" />
                     </h:commandLink>
@@ -59,7 +59,28 @@
                 value="Criar um novo Cuidador"
                 action="cuidador_criar?faces-redirect=true"
                 />
-        </h:form> 
+        </h:form>
+
+        <h:form id="procurarCuidadorForm">
+            <h:inputText 
+                id="inputProcurarCuidador"
+                size="52"
+                required="true"
+                requiredMessage="ERRO: O campo nao pode estar vazio."     
+                binding="#{inputProcurarCuidador}"
+                />
+
+            <h:commandButton
+                id="submit"
+                value="Procurar"
+                action="#{administratorManager.verificarCuidador(inputProcurarCuidador.value)}" 
+                >             
+                <f:setPropertyActionListener target="#{administratorManager.currentCuidador}" value="#{administratorManager.procurarCuidador(inputProcurarCuidador.value)}"/>
+            </h:commandButton>  
+
+        </h:form>
+        
+        <h:message for="inputProcurarCuidador" id="semCuidador" errorStyle="color:red"/>
 
         <br/>
         <br/>       
