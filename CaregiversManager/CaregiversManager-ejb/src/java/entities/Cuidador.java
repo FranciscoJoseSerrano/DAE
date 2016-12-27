@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -13,15 +15,11 @@ import javax.validation.constraints.NotNull;
  * @author joaos
  */
 @Entity
-public class Cuidador implements Serializable {
 
-    @Id
-    private String username;
-    @NotNull
-    private String password;
-    
-    @NotNull
-    private String nome;
+@NamedQueries({
+    @NamedQuery(name = "getAllCuidadores",
+            query = "SELECT s FROM Cuidador s")})
+public class Cuidador extends Utilizador implements Serializable {
 
     @OneToMany(mappedBy = "cuidador", cascade = CascadeType.REMOVE)
     private LinkedList<Utente> utentes;
@@ -34,17 +32,8 @@ public class Cuidador implements Serializable {
         procedimentosAplicados = new LinkedList<>();
     }
 
-    public Cuidador(String username, String password) {
-        this.username = username;
-        this.password = password;
-        utentes = new LinkedList<>();
-        procedimentosAplicados = new LinkedList<>();
-    }
-
     public Cuidador(String username, String nome, String password) {
-        this.username = username;
-        this.nome = nome;
-        this.password = password;
+        super(username,password,nome);
         utentes = new LinkedList<>();
         procedimentosAplicados = new LinkedList<>();
     }
@@ -54,22 +43,7 @@ public class Cuidador implements Serializable {
         return username;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+ 
     public LinkedList<Utente> getMyUtentes() {
         return utentes;
     }
@@ -88,14 +62,6 @@ public class Cuidador implements Serializable {
 
     public void setProcedimentosAplicados(LinkedList<ProcedimentoAplicado> procedimentosAplicados) {
         this.procedimentosAplicados = procedimentosAplicados;
-    }
-
-    public void setName(String nome) {
-        this.nome = nome;
-    }
-
-    public String getName() {
-        return this.nome;
     }
 
 }
