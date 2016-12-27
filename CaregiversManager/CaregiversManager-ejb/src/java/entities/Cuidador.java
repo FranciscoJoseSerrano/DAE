@@ -90,11 +90,11 @@ public class Cuidador implements Serializable {
         this.procedimentosAplicados = procedimentosAplicados;
     }
 
-    public void setNome(String nome) {
+    public void setName(String nome) {
         this.nome = nome;
     }
 
-    public String getNome() {
+    public String getName() {
         return this.nome;
     }
 

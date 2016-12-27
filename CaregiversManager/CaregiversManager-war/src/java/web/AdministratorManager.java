@@ -173,7 +173,7 @@ public class AdministratorManager implements Serializable {
                 return "cuidador_todos?faces-redirect=true";
             }
 
-            FacesContext.getCurrentInstance().addMessage("myAdmin:username", new FacesMessage("Erro: Já existe um Cuidador com esse username"));
+            FacesContext.getCurrentInstance().addMessage("myCuidador:username", new FacesMessage("Erro: Já existe um Cuidador com esse username"));
 
             return "cuidador_criar?faces-redirect=true";
 
@@ -183,6 +183,11 @@ public class AdministratorManager implements Serializable {
         }
     }
 
+    public void setNewCuidador(CuidadorDTO newCuidador) {
+        this.newCuidador = newCuidador;
+    }
+    
+    
     public CuidadorDTO getNewCuidador() {
         return newCuidador;
     }
