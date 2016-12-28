@@ -6,6 +6,9 @@
 package ejbs;
 
 
+import exceptions.EntityDoesNotExistsException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -29,6 +32,9 @@ public class ConfigBean {
     
     @EJB
     private CuidadorBean cuidadorBean;
+    
+    @EJB
+    private UtenteBean utenteBean;
 
 
     @PostConstruct
@@ -40,6 +46,15 @@ public class ConfigBean {
         administradorBean.create("ola", "asdas", "123");
         profissionalBean.create("babyboo", "João Rei", "joaoomaiordestemundoonossorei");
         cuidadorBean.create("kiko", "FranciscoGiraço", "1245");
+        
+        utenteBean.create(1, "VelhaXata2");
+        
+        try {
+            utenteBean.giveUtenteToCuidador(1, "kiko");
+        } catch (EntityDoesNotExistsException ex) {
+            Logger.getLogger(ConfigBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         
         
 
