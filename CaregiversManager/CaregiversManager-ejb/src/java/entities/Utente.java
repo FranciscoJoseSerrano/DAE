@@ -35,10 +35,7 @@ public class Utente implements Serializable {
     private String name;
     
     //ligações
-    @ManyToOne
-    @JoinColumn(name = "PROFISSIONALSAUDE_CODE")
-    private ProfissionalSaude profissional;
-   
+
     @ManyToOne
     @JoinColumn(name = "CUIDADOR_CODE")
     private Cuidador cuidador;
@@ -77,13 +74,6 @@ public class Utente implements Serializable {
         this.id = id;
     }
 
-    public ProfissionalSaude getProfissional() {
-        return profissional;
-    }
-
-    public void setProfissional(ProfissionalSaude profissional) {
-        this.profissional = profissional;
-    }
 
     public LinkedList<Necessidade> getNecessidades() {
         return necessidades;
