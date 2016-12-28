@@ -29,6 +29,9 @@ public class ConfigBean {
     
     @EJB
     private CuidadorBean cuidadorBean;
+    
+    @EJB
+    private UtenteBean utenteBean;
 
 
     @PostConstruct
@@ -41,7 +44,8 @@ public class ConfigBean {
         profissionalBean.create("babyboo", "João Rei", "joaoomaiordestemundoonossorei");
         cuidadorBean.create("kiko", "FranciscoGiraço", "1245");
         
-        
+        utenteBean.create(1,"kiko");
+        utenteBean.create(2,"asd");
 
     }
 }

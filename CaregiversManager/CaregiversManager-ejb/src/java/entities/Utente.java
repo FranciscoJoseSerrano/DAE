@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -27,6 +29,9 @@ import javax.validation.constraints.NotNull;
     query = "SELECT s FROM Utente s WHERE s.cuidador.username = :username ORDER BY s.name")})*/
 
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "getAllUtentes",
+            query = "SELECT s FROM Utente s")})
 public class Utente implements Serializable {
     
     @Id

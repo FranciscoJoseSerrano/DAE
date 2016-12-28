@@ -79,11 +79,75 @@
             </h:commandButton>  
 
         </h:form>
-        
+
         <h:message for="inputProcurarCuidador" id="semCuidador" errorStyle="color:red"/>
 
         <br/>
         <br/>       
+        <h:dataTable
+            var="utente"
+            summary="Todos os Utentes sem Cuidador"
+            value="#{administratorManager.allUtentesSemCuidador()}"
+            rules="all"
+            cellpadding="5">
+
+            <f:facet name="header">
+                <h:outputText value="Utentes sem Cuidador" />
+            </f:facet>            
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="ID" />
+                </f:facet>
+                <h:outputText value="#{utente.id}" />
+                <!--Falta validar o formato-->
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Name" />
+                </f:facet>
+                <h:outputText value="#{utente.name}" />
+            </h:column>
+        </h:dataTable>
+        <h:form>
+
+            <h:commandButton
+                id="createUtente"
+                value="Criar um novo Utente"
+                action="profissional_criar_utentes?faces-redirect=true"
+                />
+        </h:form>
+
+        <h:form id="utenteAssociarForm">
+             <h:panelGrid columns="2">
+            <h:outputLabel for="input2" value="ID do Utente " />
+            <h:inputText 
+                id="input2"
+                size="52"
+                required="true"
+                requiredMessage="ERRO: O campo nao pode estar vazio."     
+                binding="#{input2}"
+                />
+
+            <h:outputLabel for="input3" value="Username do Cuidador " />
+            <h:inputText 
+                id="input3"
+                size="52"
+                required="true"
+                requiredMessage="ERRO: O campo nao pode estar vazio."     
+                binding="#{input3}"
+                />
+             </h:panelGrid>
+            <h:commandButton
+                id="submit"
+                value="Associar"
+                action="#{administratorManager.associarUtente(input2.value, input3.value)}" 
+                >             
+
+            </h:commandButton>  
+
+        </h:form>
 
     </h:body>
 </html>

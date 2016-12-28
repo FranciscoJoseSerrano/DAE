@@ -5,6 +5,7 @@
  */
 package ejbs;
 
+import dtos.CuidadorDTO;
 import dtos.ProfissionalSaudeDTO;
 import dtos.UtenteDTO;
 import entities.Cuidador;
@@ -12,10 +13,12 @@ import entities.ProfissionalSaude;
 import entities.Utente;
 import exceptions.EntityDoesNotExistsException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -30,11 +33,12 @@ import javax.ws.rs.core.MediaType;
 @Path("/utentes")
 public class UtenteBean {
 
+    @PersistenceContext
     private EntityManager em;
 
     public void create(int id, String username) {
         try {
-            em.persist(new Utente(id,username));
+            em.persist(new Utente(id, username));
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -68,8 +72,42 @@ public class UtenteBean {
         }
     }
 
+    public List<UtenteDTO> getUtentes() {
+        try {
+            List<Utente> utentes = em.createNamedQuery("getAllUtentes").getResultList();
+            return getUtentesDTOS(utentes);
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
+    public List<UtenteDTO> utentesSemCuidador() {
+        try {
+            List<Utente> utentes = em.createNamedQuery("getAllUtentes").getResultList();
+            List<Utente> auxUtente = new LinkedList();
+            for (Utente utente : utentes) {
+                if (utente.getCuidador() == null) {
+                    auxUtente.add(utente);
+                }
+            }
+            return getUtentesDTOS(auxUtente);
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
     
-    
+    public UtenteDTO getUtente(int id) {
+        try {
+            Utente utente = em.find(Utente.class, id);
+            if (utente == null) {
+                return null;
+            }
+            return transformDTO(utente);
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
     //PARA CUIDADOR//
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -88,8 +126,6 @@ public class UtenteBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
-    
 
     //AUXILIARES
     private List<UtenteDTO> getUtentesDTOS(List<Utente> utentes) {
@@ -103,7 +139,7 @@ public class UtenteBean {
     }
 
     private UtenteDTO transformDTO(Utente utente) {
-        return new UtenteDTO(utente.getId(),utente.getName());
+        return new UtenteDTO(utente.getId(), utente.getName());
     }
 
 }

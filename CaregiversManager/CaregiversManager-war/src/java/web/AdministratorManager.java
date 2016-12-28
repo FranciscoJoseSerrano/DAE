@@ -306,6 +306,18 @@ public class AdministratorManager implements Serializable {
 
     //////////////FIM DE CUIDADOR//////////////
     //////////////PROFISSIONAL SAUDE////////////////
+    
+    public String associarUtente(int id, String username) throws EntityDoesNotExistsException{
+        if(existeCuidador(username)){
+            if(existsUtente(id)){
+                utenteBean.giveUtenteToCuidador(id, username);
+            }
+            FacesContext.getCurrentInstance().addMessage("utenteAssociarForm:input2", new FacesMessage("Erro: Não existe nenhum Cuidador com esse Username"));
+        }
+        return "cuidador_todos?faces-redirect=true";
+    }
+    
+    
     public String createProfissional() {
         try {
             if (!existsProfissional(newProfissional.getUsername())) {
@@ -390,6 +402,59 @@ public class AdministratorManager implements Serializable {
     }
 
     //////////////FIM PROFISSIONAL SUADE//////////
+    //////////////UTENTE///////////////////////
+    
+     public List<UtenteDTO> allUtentesSemCuidador() {
+        try {
+            return utenteBean.utentesSemCuidador();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+     
+     public String createUtente() {
+        try {
+            if (!existsUtente(newUtente.getId())) {
+                utenteBean.create(newUtente.getId(), newUtente.getName());
+                newUtente.reset();
+                return "cuidador_todos?faces-redirect=true";
+            }
+
+            
+
+            return "profissional_criar_utente?faces-redirect=true";
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            return null;
+        }
+    }
+
+    public boolean existsUtente(int id) {
+        UtenteDTO utenteAux = procurarUtente(id);
+        return utenteAux != null;
+    }
+    
+    public UtenteDTO procurarUtente(int id) {
+        try {
+
+            this.currentUtente = utenteBean.getUtente(id);
+            if (this.currentUtente != null) {
+                return currentUtente;
+
+            } else {
+
+                return null;
+            }
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
+            return null;
+        }
+    }
+    
+    //////////////FIM DE UTENTE////////////////
     public UIComponent getComponent() {
         return component;
     }
