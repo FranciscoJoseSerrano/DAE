@@ -5,11 +5,10 @@
  */
 package ejbs;
 
-import dtos.CuidadorDTO;
-import dtos.ProfissionalSaudeDTO;
+
+
 import dtos.UtenteDTO;
 import entities.Cuidador;
-import entities.ProfissionalSaude;
 import entities.Utente;
 import exceptions.EntityDoesNotExistsException;
 import java.util.ArrayList;

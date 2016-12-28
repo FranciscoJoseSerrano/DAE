@@ -28,7 +28,7 @@
           <h:dataTable
             var="utente"
             summary="Utentes"
-            value="#{administratorManager.allAdministradores}"
+            value="#{administratorManager.utentesFromCurrentCuidador}"
             rules="all"
             cellpadding="5">
 
@@ -40,15 +40,8 @@
                 <f:facet name="header">
                     <h:outputText value="Nome" />
                 </f:facet>
-                <h:outputText value="#{administrador.username}" />
+                <h:outputText value="#{utente.name}" />
                 <!--Falta validar o formato-->
-            </h:column>
-
-            <h:column>
-                <f:facet name="header">
-                    <h:outputText value="ID" />
-                </f:facet>
-                <h:outputText value="#{administrador.nome}" />
             </h:column>
 
             <h:column>

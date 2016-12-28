@@ -19,6 +19,7 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -302,6 +303,15 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
             return null;
         }
+    }
+    
+    public List<UtenteDTO> getUtentesFromCurrentCuidador(){
+        try {
+            return utenteBean.getMyUtentes(currentCuidador.getUsername());
+        } catch (EntityDoesNotExistsException ex) {
+            Logger.getLogger(AdministratorManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     //////////////FIM DE CUIDADOR//////////////
