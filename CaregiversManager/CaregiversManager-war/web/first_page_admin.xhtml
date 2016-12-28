@@ -92,6 +92,80 @@
          
         <br/>
         <br/>       
+          <h:dataTable
+            var="profissional"
+            summary="Todos os Profissionais"
+            value="#{administratorManager.allProfissionais()}"
+            rules="all"
+            cellpadding="5">
+
+            <f:facet name="header">
+                <h:outputText value="Profissionais" />
+            </f:facet>            
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Username" />
+                </f:facet>
+                <h:outputText value="#{profissional.username}" />
+                <!--Falta validar o formato-->
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Name" />
+                </f:facet>
+                <h:outputText value="#{profissional.nome}" />
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Actions" />
+                </f:facet>
+                <h:form>
+                    <h:commandLink value="Details" action="profissional_detalhes?faces-redirect=true">
+                        <f:setPropertyActionListener target="#{administratorManager.currentProfissional}" value="#{profissional}" />
+                    </h:commandLink>
+                    &nbsp;
+                    <h:commandLink value="Update" action="profissional_update?faces-redirect=true">
+                        <f:setPropertyActionListener target="#{administratorManager.currentProfissional}" value="#{profissional}" />
+                    </h:commandLink>
+                    &nbsp;
+                    <h:commandLink value="Remove" actionListener="#{administratorManager.removerProfissional}">
+                        <f:param name="profissionalUsername" id="profissionalUsername" value="#{profissional.username}" />
+                    </h:commandLink>
+                </h:form>
+            </h:column>   
+          </h:dataTable>
+         <h:form id="myForm2">
+            <h:inputText 
+                id="input2"
+                size="52"
+                required="true"
+                requiredMessage="Error: Name cannot be empty."     
+                binding="#{input2}"
+                />
+
+            <h:commandButton
+                id="submit2"
+                value="Procurar"
+                action="#{administratorManager.verificarProfissionalSaude(input2.value)}" 
+                >             
+                <f:setPropertyActionListener target="#{administratorManager.currentProfissional}" value="#{administratorManager.procurarProfissional(input2.value)}"/>
+            </h:commandButton> 
+            
+        </h:form>
+        
+        <h:message for="input2" id="semProfissional" errorStyle="color:red"/>
+        
+        <h:form>
+            <h:commandButton
+                id="create"
+                value="Criar novo Profissional"
+                action="profissional_criar?faces-redirect=true"
+                />
+        </h:form>
+         
     </h:body>
 </html>
 

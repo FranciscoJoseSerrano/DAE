@@ -13,7 +13,7 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQueries({
     @NamedQuery(name = "getAllProfissionais",
-            query = "SELECT s FROM ProfissionalSaude s ORDER BY s.name")})
+            query = "SELECT s FROM ProfissionalSaude s ORDER BY s.nome")})
 public class ProfissionalSaude extends Utilizador implements Serializable {
     
     public ProfissionalSaude() {

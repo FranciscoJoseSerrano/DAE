@@ -36,7 +36,8 @@ public class ConfigBean {
 
         administradorBean.create("baby", "João Serrano", "joaoreidaselvaedomundo123");
         administradorBean.create("baby2", "João Serrano o Rei da Selva", "joaorei");
-        administradorBean.create("baby7", "Numero Perfeito", "PerfeitoSoueu");     
+        administradorBean.create("baby7", "Numero Perfeito", "PerfeitoSoueu");  
+        administradorBean.create("ola", "asdas", "123");
         profissionalBean.create("babyboo", "João Rei", "joaoomaiordestemundoonossorei");
         cuidadorBean.create("kiko", "FranciscoGiraço", "1245");
         

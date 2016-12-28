@@ -7,8 +7,12 @@ package web;
 
 import dtos.AdministradorDTO;
 import dtos.CuidadorDTO;
+import dtos.ProfissionalSaudeDTO;
+import dtos.UtenteDTO;
 import ejbs.AdministradorBean;
 import ejbs.CuidadorBean;
+import ejbs.ProfissionalSaudeBean;
+import ejbs.UtenteBean;
 import exceptions.EntityDoesNotExistsException;
 import exceptions.MyConstraintViolationException;
 import javax.inject.Named;
@@ -43,6 +47,16 @@ public class AdministratorManager implements Serializable {
     private CuidadorDTO newCuidador;
     private CuidadorDTO currentCuidador;
 
+    @EJB
+    private UtenteBean utenteBean;
+    private UtenteDTO newUtente;
+    private UtenteDTO currentUtente;
+
+    @EJB
+    private ProfissionalSaudeBean profissionalBean;
+    private ProfissionalSaudeDTO newProfissional;
+    private ProfissionalSaudeDTO currentProfissional;
+
     private UIComponent component;
 
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
@@ -51,6 +65,40 @@ public class AdministratorManager implements Serializable {
     public AdministratorManager() {
         newAdministrador = new AdministradorDTO();
         newCuidador = new CuidadorDTO();
+        newProfissional = new ProfissionalSaudeDTO();
+        newUtente = new UtenteDTO();
+    }
+
+    public UtenteDTO getNewUtente() {
+        return newUtente;
+    }
+
+    public void setNewUtente(UtenteDTO newUtente) {
+        this.newUtente = newUtente;
+    }
+
+    public UtenteDTO getCurrentUtente() {
+        return currentUtente;
+    }
+
+    public void setCurrentUtente(UtenteDTO currentUtente) {
+        this.currentUtente = currentUtente;
+    }
+
+    public ProfissionalSaudeDTO getNewProfissional() {
+        return newProfissional;
+    }
+
+    public void setNewProfissional(ProfissionalSaudeDTO newProfissional) {
+        this.newProfissional = newProfissional;
+    }
+
+    public ProfissionalSaudeDTO getCurrentProfissional() {
+        return currentProfissional;
+    }
+
+    public void setCurrentProfissional(ProfissionalSaudeDTO currentProfissional) {
+        this.currentProfissional = currentProfissional;
     }
 
     public String createAdministrador() {
@@ -155,7 +203,6 @@ public class AdministratorManager implements Serializable {
     }
 
     ////////////////FIM DE ADMINISTRADOR//////////////
-    
     //////CUIDADOR///////
     public List<CuidadorDTO> getAllCuidadores() {
         try {
@@ -187,8 +234,7 @@ public class AdministratorManager implements Serializable {
     public void setNewCuidador(CuidadorDTO newCuidador) {
         this.newCuidador = newCuidador;
     }
-    
-    
+
     public CuidadorDTO getNewCuidador() {
         return newCuidador;
     }
@@ -257,12 +303,93 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-    
-    public void getUtentesFromCurrentCuidador(){
-        
-    }
 
     //////////////FIM DE CUIDADOR//////////////
+    //////////////PROFISSIONAL SAUDE////////////////
+    public String createProfissional() {
+        try {
+            if (!existsProfissional(newProfissional.getUsername())) {
+                profissionalBean.create(newProfissional.getUsername(), newProfissional.getNome(), newProfissional.getPassword());
+                newProfissional.reset();
+                return "first_page_admin?faces-redirect=true";
+            }
+
+            return "profissional_criar?faces-redirect=true";
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            return null;
+        }
+    }
+
+    public boolean existsProfissional(String username) {
+        ProfissionalSaudeDTO profissionalAux = procurarProfissional(username);
+        return profissionalAux != null;
+    }
+
+    public ProfissionalSaudeDTO procurarProfissional(String username) {
+        try {
+
+            this.currentProfissional = profissionalBean.getProfissionalSaude(username);
+            if (this.currentProfissional != null) {
+                return currentProfissional;
+
+            } else {
+
+                return null;
+            }
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
+            return null;
+        }
+    }
+    
+    
+    public void removerProfissional(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("profissionalUsername");
+            String username = param.getValue().toString();
+            profissionalBean.remove(username);
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Ocorreu um erro ! Tente mais tarde", logger);
+        }
+    }
+
+    public String updateProfissional(ProfissionalSaudeDTO profissional) {
+        try {
+            profissionalBean.update(profissional);
+            return "first_page_admin?faces-redirect=true";
+        } catch (EntityDoesNotExistsException | MyConstraintViolationException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
+        }
+        return "profissional_update";
+    }
+
+    public List<ProfissionalSaudeDTO> allProfissionais() {
+        try {
+            return profissionalBean.getAllProfissionais();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+    
+    public String verificarProfissionalSaude(String username) {
+
+        if (existsProfissional(username)) {
+            return "profissional_detalhes?faces-redirect=true";
+        }
+
+        FacesContext.getCurrentInstance().addMessage("myForm2:input2", new FacesMessage("Erro: Não existe nenhum Profissional com esse Username"));
+        return "first_page_admin";
+
+    }
+
+    //////////////FIM PROFISSIONAL SUADE//////////
     public UIComponent getComponent() {
         return component;
     }

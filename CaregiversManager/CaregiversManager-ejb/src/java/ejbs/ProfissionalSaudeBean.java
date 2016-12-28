@@ -42,7 +42,7 @@ public class ProfissionalSaudeBean {
         try {
             ProfissionalSaude profissional = em.find(ProfissionalSaude.class, username);
             if (profissional == null) {
-                throw new EntityDoesNotExistsException("Não existe nenhum Profissional de Saúde com esse username");
+                return null;
             }
             return transformDTO(profissional);
         } catch (Exception e) {
