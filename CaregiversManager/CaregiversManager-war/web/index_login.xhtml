@@ -9,10 +9,10 @@
           <h:form>
             <h:panelGrid columns="2">
                 <h:outputLabel for="usernameInput">Username: </h:outputLabel>
-                <h:inputText id="usernameInput" required="true" />
+                <h:inputText id="usernameInput" value="#{userManager.username}" required="true" />
                 <h:outputLabel for="passwordInput">Password: </h:outputLabel>
-                <h:inputSecret id="passwordInput" required="true" />
-                <h:commandButton value="Login" action="first_page_admin?faces-redirect=true" />
+                <h:inputSecret id="passwordInput" value="#{userManager.password}" required="true" />
+                <h:commandButton value="Login" action="#{userManager.login}" />
             </h:panelGrid>
         </h:form>
     </h:body>

@@ -26,15 +26,21 @@ public class ConfigBean {
     
     @EJB
     private ProfissionalSaudeBean profissionalBean;
+    
+    @EJB
+    private CuidadorBean cuidadorBean;
+
 
     @PostConstruct
     public void populateBD() {
 
         administradorBean.create("baby", "João Serrano", "joaoreidaselvaedomundo123");
         administradorBean.create("baby2", "João Serrano o Rei da Selva", "joaorei");
-        administradorBean.create("baby7", "Numero Perfeito", "PerfeitoSoueu");
-        
+        administradorBean.create("baby7", "Numero Perfeito", "PerfeitoSoueu");     
         profissionalBean.create("babyboo", "João Rei", "joaoomaiordestemundoonossorei");
+        cuidadorBean.create("kiko", "FranciscoGiraço", "1245");
+        
+        
 
     }
 }

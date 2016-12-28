@@ -155,6 +155,7 @@ public class AdministratorManager implements Serializable {
     }
 
     ////////////////FIM DE ADMINISTRADOR//////////////
+    
     //////CUIDADOR///////
     public List<CuidadorDTO> getAllCuidadores() {
         try {
@@ -255,6 +256,10 @@ public class AdministratorManager implements Serializable {
             FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
             return null;
         }
+    }
+    
+    public void getUtentesFromCurrentCuidador(){
+        
     }
 
     //////////////FIM DE CUIDADOR//////////////

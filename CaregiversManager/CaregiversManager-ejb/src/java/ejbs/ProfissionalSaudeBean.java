@@ -86,7 +86,7 @@ public class ProfissionalSaudeBean {
     }
     
     
-    public List<ProfissionalSaudeDTO> getAllAdministradores() {
+    public List<ProfissionalSaudeDTO> getAllProfissionais() {
         try {
             List<ProfissionalSaude> profissionais = em.createNamedQuery("getAllProfissionais").getResultList();
             return getProfissionalSaudeDTOS(profissionais);

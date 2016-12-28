@@ -6,52 +6,41 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
-
     <context-param>
         <param-name>
             javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL
         </param-name>
         <param-value>true</param-value>
-    </context-param>    
+    </context-param>
     <filter>
         <filter-name>PrimeFaces FileUpload Filter </filter-name>
         <filter-class> org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-           
     </filter>
     <filter-mapping>
         <filter-name>PrimeFaces FileUpload Filter </filter-name>
         <servlet-name> Faces Servlet</servlet-name>
     </filter-mapping>
-    
-            
- 
-<servlet>
-     <servlet-name>Faces Servlet</servlet-name>
-     <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-     <load-on-startup>1</load-on-startup>
- </servlet>
- <servlet-mapping>
-     <servlet-name>Faces Servlet</servlet-name>
-    <url-pattern>*.jsf</url-pattern>
-</servlet-mapping>
-    
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
     </servlet-mapping>
-    
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
-    
     <welcome-file-list>
         <welcome-file>faces/index_login.xhtml</welcome-file>
     </welcome-file-list>
-    
-    
-    
     <servlet>
         <servlet-name>FacesServlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -64,7 +53,57 @@
     <error-page>
         <error-code>403</error-code>
         <location>/faces/error.xhtml</location>
-    </error-page>   
-     
-    
+    </error-page>
+    <security-constraint>
+        <display-name>AdminAuthenticationConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>Authentication</web-resource-name>
+            <description/>
+            <url-pattern>/faces/admin</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>Administrador</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>CuidadorAuthenticationConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>cuidador</web-resource-name>
+            <description/>
+            <url-pattern>/faces/cuidador</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>Cuidador</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>ProfissionalSaudeAuthenticationConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>ProfissionalSaude</web-resource-name>
+            <description/>
+            <url-pattern>/faces/profissional</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>ProfissionalSaude</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>dae_project_realm</realm-name>
+    </login-config>
+    <security-role>
+        <description/>
+        <role-name>Administrador</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>Cuidador</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>ProfissionalSaude</role-name>
+    </security-role>
 </web-app>

@@ -4,18 +4,15 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author joaos
  */
 @Entity
-
 @NamedQueries({
     @NamedQuery(name = "getAllCuidadores",
             query = "SELECT s FROM Cuidador s")})
@@ -33,7 +30,7 @@ public class Cuidador extends Utilizador implements Serializable {
     }
 
     public Cuidador(String username, String nome, String password) {
-        super(username,password,nome);
+        super(username,password,nome,GROUP.Cuidador);
         utentes = new LinkedList<>();
         procedimentosAplicados = new LinkedList<>();
     }

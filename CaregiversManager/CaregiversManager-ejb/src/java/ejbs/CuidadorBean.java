@@ -24,7 +24,6 @@ import javax.validation.ConstraintViolationException;
  * @author Francisco
  */
 @Stateless
-
 public class CuidadorBean {
 
     @PersistenceContext
@@ -99,28 +98,25 @@ public class CuidadorBean {
                 return dto;
             }
         } catch (EJBException e) {
-           throw new EJBException(e.getMessage());
+            throw new EJBException(e.getMessage());
         }
-        
+
         return null;
     }
 
 //AUXILIARES
-private List<CuidadorDTO> getCuidadoresDTOS(List<Cuidador> cuidadores) {
+    private List<CuidadorDTO> getCuidadoresDTOS(List<Cuidador> cuidadores) {
         List<CuidadorDTO> cuidadoresDTOs = new ArrayList<>();
-        
+
         for (Cuidador c : cuidadores) {
             cuidadoresDTOs.add(transformDTO(c));
         }
         return cuidadoresDTOs;
-        
+
     }
-    
-  
+
     private CuidadorDTO transformDTO(Cuidador c) {
         return new CuidadorDTO(c.getUsername(), null, c.getName());
     }
-    
-    
-    
+
 }
