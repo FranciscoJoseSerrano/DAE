@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UtenteDTO {
     
+    protected int id;
     protected String name;
    
    
@@ -24,7 +25,8 @@ public class UtenteDTO {
     public UtenteDTO() {
     }
 
-    public UtenteDTO(String name) {
+    public UtenteDTO(int id , String name) {
+        this.id = id;
         this.name = name;
         
     }
@@ -37,7 +39,16 @@ public class UtenteDTO {
         this.name = name;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void reset() {
+        setId(0);
         setName(null);
 
     }

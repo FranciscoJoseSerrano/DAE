@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
 public class Utente implements Serializable {
     
     @Id
-    private Long id;
+    private int id;
     @NotNull  
     private String name;
     
@@ -51,8 +51,9 @@ public class Utente implements Serializable {
     public Utente(){       
     }
     
-    public Utente(String name){
+    public Utente(int id, String name){
         this.name = name;
+        this.id = id;
         this.cuidador = null;
         this.necessidades=new LinkedList<>();
         this.procedimentosAplicados=new LinkedList<>();
@@ -66,11 +67,11 @@ public class Utente implements Serializable {
         this.procedimentosAplicados = prodecimentosAplicados;
     }
      
-     public Long getId() {
+     public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -32,19 +32,19 @@ public class UtenteBean {
 
     private EntityManager em;
 
-    public void create(String username) {
+    public void create(int id, String username) {
         try {
-            em.persist(new Utente(username));
+            em.persist(new Utente(id,username));
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
     }
 
-    public void giveUtenteToCuidador(String usernameUtente, String usernameCuidador)
+    public void giveUtenteToCuidador(int id, String usernameCuidador)
             throws EntityDoesNotExistsException {
         try {
 
-            Utente utente = em.find(Utente.class, usernameUtente);
+            Utente utente = em.find(Utente.class, id);
             if (utente == null) {
                 throw new EntityDoesNotExistsException("Não existe Utente com esse username.");
             }
@@ -103,7 +103,7 @@ public class UtenteBean {
     }
 
     private UtenteDTO transformDTO(Utente utente) {
-        return new UtenteDTO(utente.getName());
+        return new UtenteDTO(utente.getId(),utente.getName());
     }
 
 }
