@@ -25,9 +25,9 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQueries({
     @NamedQuery(name = "getAllMateriaisDeCapacitacao",
-            query = "SELECT m FROM MaterialDeCapacitacao m"),
-    @NamedQuery(name = "getAllMateriaisByDescricao",
-            query = "SELECT m FROM MaterialDeCapacitacao m WHERE descricao LIKE :descricao")})
+            query = "SELECT m FROM MaterialDeCapacitacao m")})
+    /*@NamedQuery(name = "getAllMateriaisByDescricao",
+            query = "SELECT m FROM MaterialDeCapacitacao m WHERE descricao LIKE :descricao")})*/
 public class MaterialDeCapacitacao implements Serializable {
 
     @Id
@@ -119,6 +119,10 @@ public class MaterialDeCapacitacao implements Serializable {
 
     public LinkedList<Necessidade> getNecessidades() {
         return necessidades;
+    }
+    
+    public void addNecessidade(Necessidade n){
+        this.necessidades.add(n);
     }
 
     public void setNecessidades(LinkedList<Necessidade> necessidades) {

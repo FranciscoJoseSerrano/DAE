@@ -5,8 +5,11 @@
  */
 package ejbs;
 
-
+import entities.SuporteMaterialDeCapacitacao;
+import entities.TipoMaterialDeCapacitacao;
+import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistsException;
+import exceptions.MyConstraintViolationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -26,33 +29,46 @@ public class ConfigBean {
     // "Insert Code > Add Business Method")
     @EJB
     private AdministradorBean administradorBean;
-    
+
     @EJB
     private ProfissionalSaudeBean profissionalBean;
-    
+
     @EJB
     private CuidadorBean cuidadorBean;
-    
+
     @EJB
     private UtenteBean utenteBean;
 
+    @EJB
+    private NecessidadeBean necessidadeBean;
+
+    @EJB
+    private MaterialDeCapacitacaoBean materialBean;
 
     @PostConstruct
     public void populateBD() {
+        try {
+            administradorBean.create("baby", "João Serrano", "joaoreidaselvaedomundo123");
+            administradorBean.create("baby2", "João Serrano o Rei da Selva", "joaorei");
+            administradorBean.create("baby7", "Numero Perfeito", "PerfeitoSoueu");
+            administradorBean.create("ola", "asdas", "123");
+            profissionalBean.create("babyboo", "João Rei", "joaoomaiordestemundoonossorei");
+            cuidadorBean.create("kiko", "FranciscoGiraço", "1245");
 
-        administradorBean.create("baby", "João Serrano", "joaoreidaselvaedomundo123");
-        administradorBean.create("baby2", "João Serrano o Rei da Selva", "joaorei");
-        administradorBean.create("baby7", "Numero Perfeito", "PerfeitoSoueu");  
-        administradorBean.create("ola", "asdas", "123");
-        profissionalBean.create("babyboo", "João Rei", "joaoomaiordestemundoonossorei");
-        cuidadorBean.create("kiko", "FranciscoGiraço", "1245");
-        
-        utenteBean.create(1, "VelhaXata2");
-        
-        utenteBean.create(3,"kiko");
-        utenteBean.create(2,"asd");
-        
-   
+            utenteBean.create(1, "VelhaXata2");
+
+            utenteBean.create(3, "kiko");
+            utenteBean.create(2, "asd");
+            necessidadeBean.create(1, "esta doente o filho da puta", "é para o cu, esse cabrão");
+            materialBean.create("Baby i like your style", SuporteMaterialDeCapacitacao.TEXTO, TipoMaterialDeCapacitacao.TUTORIAL, null);
+            materialBean.create("baby", SuporteMaterialDeCapacitacao.TEXTO, TipoMaterialDeCapacitacao.TUTORIAL, null);
+
+            Integer x = 1;
+            Long b = x.longValue();
+            necessidadeBean.giveMateriaisNecessidades(1, b);
+        } catch (EntityDoesNotExistsException  e) {
+            System.err.println("Error: " + e.getMessage());
+        }
 
     }
 }

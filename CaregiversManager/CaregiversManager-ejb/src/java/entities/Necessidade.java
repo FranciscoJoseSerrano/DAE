@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 public class Necessidade implements Serializable {
     
     @Id
-    private Long id;
+    private int id;
     @NotNull
     private String nome;
     private String descrição;
@@ -42,7 +42,7 @@ public class Necessidade implements Serializable {
        
    }
 
-    public Necessidade(Long id, String nome, String descrição) {
+    public Necessidade(int id, String nome, String descrição) {
         this.id = id;
         this.nome = nome;
         this.descrição = descrição;
@@ -59,11 +59,11 @@ public class Necessidade implements Serializable {
         this.utentes = utentes;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -89,6 +89,10 @@ public class Necessidade implements Serializable {
 
     public void setMateriais(LinkedList<MaterialDeCapacitacao> materiais) {
         this.materiais = materiais;
+    }
+    
+    public void addMaterial(MaterialDeCapacitacao m){
+        this.materiais.add(m);
     }
    
     
