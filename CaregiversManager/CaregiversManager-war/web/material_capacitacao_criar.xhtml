@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Criar Material de Capacitacao</title>
+    </h:head>
+    <h:body>
+        <h:form id="myAdmin">                  
+            <h:panelGrid columns="1" >
+                
+                <h:outputLabel for="descricao" value="Descricao: " />
+                <h:inputText 
+                    id="descricao"
+                    size="20"
+                    required="true"
+                    requiredMessage="Error: Description cannot be empty."                            
+                    value="#{administratorManager.newMaterialCapacitacao.descricao}" />
+
+                <br></br>
+
+                Suporte do Material de Capacitação   
+                <br/>
+                <h:selectOneRadio value="#{administratorManager.newMaterialCapacitacao.suporte}">
+                    <f:selectItems value="#{administratorManager.suportes}" />
+                </h:selectOneRadio>   
+
+                <br/>
+                Tipos de Suporte do Material de Capacitação
+                <br/>
+                <h:selectOneRadio value="#{administratorManager.newMaterialCapacitacao.tipoSuporte}">
+                    <f:selectItems value="#{administratorManager.tiposSuportes}" />
+                </h:selectOneRadio>   
+                <br/>
+
+                <h:outputLabel for="link" value="File Link: " />
+                <h:inputText 
+                    id="link"
+                    size="20"
+                    required="true"
+                    requiredMessage="Error: Link cannot be empty."                            
+                    value="#{administratorManager.newMaterialCapacitacao.link}" />
+
+                <br></br>
+
+
+                <h:commandButton
+                    id="submit"
+                    value="Create Material"
+                    binding="#{administratorManager.component}" 
+                    action="#{administratorManager.createMaterialDeCapacitacao()}" />
+                <h:message for="submit" style="color: red"/>
+
+            </h:panelGrid >       
+            <!-- fazer mensagens erro -->
+            <h:messages for="username" id="erroUsername"/>
+        </h:form>
+
+    </h:body>
+</html>
+

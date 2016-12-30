@@ -5,21 +5,21 @@
  */
 package ejbs;
 
-
-
 import dtos.UtenteDTO;
 import entities.Cuidador;
 import entities.Utente;
 import exceptions.EntityDoesNotExistsException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -28,8 +28,9 @@ import javax.ws.rs.core.MediaType;
  * @author joaos
  */
 //////ELEMENT COLLENCTION NÂO ESQUECER !!!!///////
-@Stateless
+
 @Path("/utentes")
+@Stateless
 public class UtenteBean {
 
     @PersistenceContext
@@ -71,7 +72,8 @@ public class UtenteBean {
         }
     }
 
-    public List<UtenteDTO> getUtentes() {
+    
+    public LinkedList<UtenteDTO> getUtentes() {
         try {
             List<Utente> utentes = em.createNamedQuery("getAllUtentes").getResultList();
             return getUtentesDTOS(utentes);
@@ -94,7 +96,7 @@ public class UtenteBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     public UtenteDTO getUtente(int id) {
         try {
             Utente utente = em.find(Utente.class, id);
@@ -108,10 +110,11 @@ public class UtenteBean {
     }
 
     //PARA CUIDADOR//
+   
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("myUtentes")
-    public List<UtenteDTO> getMyUtentes(String username) throws EntityDoesNotExistsException {
+    @Path("myUtentes/{idPessoa}/")
+    public List<UtenteDTO> getMyUtentes(@PathParam("idPessoa") String username) throws EntityDoesNotExistsException {
         try {
             Cuidador cuidador = em.find(Cuidador.class, username);
             if (cuidador == null) {
@@ -127,8 +130,8 @@ public class UtenteBean {
     }
 
     //AUXILIARES
-    private List<UtenteDTO> getUtentesDTOS(List<Utente> utentes) {
-        List<UtenteDTO> utentesDTOs = new ArrayList<>();
+    private LinkedList<UtenteDTO> getUtentesDTOS(List<Utente> utentes) {
+        LinkedList<UtenteDTO> utentesDTOs = new LinkedList<>();
 
         for (Utente utente : utentes) {
             utentesDTOs.add(transformDTO(utente));

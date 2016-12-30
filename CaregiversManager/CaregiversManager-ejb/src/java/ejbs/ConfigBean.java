@@ -49,16 +49,10 @@ public class ConfigBean {
         
         utenteBean.create(1, "VelhaXata2");
         
-        try {
-            utenteBean.giveUtenteToCuidador(1, "kiko");
-        } catch (EntityDoesNotExistsException ex) {
-            Logger.getLogger(ConfigBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
-        
-        utenteBean.create(1,"kiko");
+        utenteBean.create(3,"kiko");
         utenteBean.create(2,"asd");
+        
+   
 
     }
 }

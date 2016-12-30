@@ -7,17 +7,22 @@ package web;
 
 import dtos.AdministradorDTO;
 import dtos.CuidadorDTO;
+import dtos.MaterialDeCapacitacaoDTO;
 import dtos.ProfissionalSaudeDTO;
 import dtos.UtenteDTO;
 import ejbs.AdministradorBean;
 import ejbs.CuidadorBean;
+import ejbs.MaterialDeCapacitacaoBean;
 import ejbs.ProfissionalSaudeBean;
 import ejbs.UtenteBean;
+import entities.SuporteMaterialDeCapacitacao;
+import entities.TipoMaterialDeCapacitacao;
 import exceptions.EntityDoesNotExistsException;
 import exceptions.MyConstraintViolationException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +33,15 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ResponseProcessingException;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -58,8 +72,19 @@ public class AdministratorManager implements Serializable {
     private ProfissionalSaudeDTO newProfissional;
     private ProfissionalSaudeDTO currentProfissional;
 
+    @EJB
+    private MaterialDeCapacitacaoBean materialCapacitacaoBean;
+    private MaterialDeCapacitacaoDTO newMaterialCapacitacao;
+    private MaterialDeCapacitacaoDTO selectedMaterial;
+
+    private SuporteMaterialDeCapacitacao[] suportes;
+    private TipoMaterialDeCapacitacao[] tiposSuporte;
+
     private UIComponent component;
 
+    private Client client;
+    private WebTarget target;
+    private final String baseUri = "http://localhost:8080/CaregiversManager-war/webapi";
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
 
     //////ADMINISTRADOR/////////
@@ -68,6 +93,10 @@ public class AdministratorManager implements Serializable {
         newCuidador = new CuidadorDTO();
         newProfissional = new ProfissionalSaudeDTO();
         newUtente = new UtenteDTO();
+        newMaterialCapacitacao = new MaterialDeCapacitacaoDTO();
+        suportes = getAllMaterialCapacitacaoSuporte();
+        tiposSuporte = getAllMaterialCapacitacaoTiposSuporte();
+        client = ClientBuilder.newClient();
     }
 
     public UtenteDTO getNewUtente() {
@@ -304,8 +333,8 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-    
-    public List<UtenteDTO> getUtentesFromCurrentCuidador(){
+
+    public List<UtenteDTO> getUtentesFromCurrentCuidador() {
         try {
             return utenteBean.getMyUtentes(currentCuidador.getUsername());
         } catch (EntityDoesNotExistsException ex) {
@@ -316,18 +345,16 @@ public class AdministratorManager implements Serializable {
 
     //////////////FIM DE CUIDADOR//////////////
     //////////////PROFISSIONAL SAUDE////////////////
-    
-    public String associarUtente(int id, String username) throws EntityDoesNotExistsException{
-        if(existeCuidador(username)){
-            if(existsUtente(id)){
+    public String associarUtente(int id, String username) throws EntityDoesNotExistsException {
+        if (existeCuidador(username)) {
+            if (existsUtente(id)) {
                 utenteBean.giveUtenteToCuidador(id, username);
             }
             FacesContext.getCurrentInstance().addMessage("utenteAssociarForm:input2", new FacesMessage("Erro: Não existe nenhum Cuidador com esse Username"));
         }
         return "cuidador_todos?faces-redirect=true";
     }
-    
-    
+
     public String createProfissional() {
         try {
             if (!existsProfissional(newProfissional.getUsername())) {
@@ -366,8 +393,7 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-    
-    
+
     public void removerProfissional(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("profissionalUsername");
@@ -399,7 +425,7 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-    
+
     public String verificarProfissionalSaude(String username) {
 
         if (existsProfissional(username)) {
@@ -413,8 +439,7 @@ public class AdministratorManager implements Serializable {
 
     //////////////FIM PROFISSIONAL SUADE//////////
     //////////////UTENTE///////////////////////
-    
-     public List<UtenteDTO> allUtentesSemCuidador() {
+    public List<UtenteDTO> allUtentesSemCuidador() {
         try {
             return utenteBean.utentesSemCuidador();
         } catch (Exception e) {
@@ -422,16 +447,14 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-     
-     public String createUtente() {
+
+    public String createUtente() {
         try {
             if (!existsUtente(newUtente.getId())) {
                 utenteBean.create(newUtente.getId(), newUtente.getName());
                 newUtente.reset();
                 return "cuidador_todos?faces-redirect=true";
             }
-
-            
 
             return "profissional_criar_utente?faces-redirect=true";
 
@@ -445,7 +468,7 @@ public class AdministratorManager implements Serializable {
         UtenteDTO utenteAux = procurarUtente(id);
         return utenteAux != null;
     }
-    
+
     public UtenteDTO procurarUtente(int id) {
         try {
 
@@ -463,8 +486,126 @@ public class AdministratorManager implements Serializable {
             return null;
         }
     }
-    
+
     //////////////FIM DE UTENTE////////////////
+    
+    //////MATERIAIS///////
+    public List<MaterialDeCapacitacaoDTO> getAllMateriais() {
+        try {
+            return materialCapacitacaoBean.getMateriaisDeCapacitacao();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+    
+        public MaterialDeCapacitacaoDTO getSelectedMaterial() {
+        return selectedMaterial;
+    }
+
+    public void setSelectedMaterial(MaterialDeCapacitacaoDTO selectedMaterial) {
+        this.selectedMaterial = selectedMaterial;
+    }
+    
+
+
+    public String createMaterialDeCapacitacao() {
+        try {
+            //if (!materialCapacitacaoBean.existsMaterial(newMaterialCapacitacao.getId())) {
+                materialCapacitacaoBean.create(newMaterialCapacitacao.getDescricao(),newMaterialCapacitacao.getSuporte(),newMaterialCapacitacao.getTipoSuporte(),newMaterialCapacitacao.getLink());
+                newMaterialCapacitacao.reset();
+                return "material_capacitacao_todos?faces-redirect=true";
+           // }
+
+           // FacesContext.getCurrentInstance().addMessage("myAdmin:username", new FacesMessage("Erro: Já existe um Material com esse id"));
+
+           // return "material_capacitacao_criar?faces-redirect=true";
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            return null;
+        }
+    }
+
+    public MaterialDeCapacitacaoDTO getNewMaterialCapacitacao() {
+        return newMaterialCapacitacao;
+    }
+
+       public SuporteMaterialDeCapacitacao[] getAllMaterialCapacitacaoSuporte() {
+        try {
+            return SuporteMaterialDeCapacitacao.values();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+       
+         public TipoMaterialDeCapacitacao[] getAllMaterialCapacitacaoTiposSuporte() {
+         try {
+            return TipoMaterialDeCapacitacao.values();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+       
+    public void removerMaterialCapacitacao(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("material_id");
+            Long id = Long.parseLong(param.getValue().toString());
+            materialCapacitacaoBean.remove(id);
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Ocorreu um erro ! Tente mais tarde", logger);
+        }
+    }
+
+
+  
+
+    public String updateMaterialDeCapacitacao(MaterialDeCapacitacaoDTO m) {
+        try {
+            materialCapacitacaoBean.update(m);
+            return "material_capacitacao_todos?faces-redirect=true";
+        } catch (EntityDoesNotExistsException | MyConstraintViolationException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
+        }
+        return "material_update";
+    }
+
+    public String verificarMateriaisDeCapacitacao(String descricao) {
+
+        if (existeMaterialCapacitacao(descricao)) {
+            return "material_capacitacao_detalhes?faces-redirect=true";
+        }
+
+        FacesContext.getCurrentInstance().addMessage("procurarMaterialCapacitacao:inputProcurarMaterial", new FacesMessage("Erro: Não existe nenhum Material com essa descricao"));
+        return "material_capacitacao_todos";
+        
+
+    }
+
+    public boolean existeMaterialCapacitacao(String descricao) {
+        if(procurarMaterialCapacitacaoByDescription(descricao).size()>0){
+            return true;
+        }
+     return false;
+    }
+ 
+
+    public List<MaterialDeCapacitacaoDTO> procurarMaterialCapacitacaoByDescription(String descricao) {
+        try {
+               List<MaterialDeCapacitacaoDTO> list = materialCapacitacaoBean.getMaterialCapacitacaoByDescricao(descricao);
+               return list;              
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ocorrido ! Tente mais tarde", logger);
+            return null;
+        }
+    }
+    
+    ///////////////FIM MATERIAL//////////////////////
     public UIComponent getComponent() {
         return component;
     }
@@ -472,4 +613,6 @@ public class AdministratorManager implements Serializable {
     public void setComponent(UIComponent component) {
         this.component = component;
     }
+
+  
 }

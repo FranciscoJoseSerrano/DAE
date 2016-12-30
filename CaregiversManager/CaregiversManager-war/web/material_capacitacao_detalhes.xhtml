@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Detalhes do Material de Capacitação</title>
+    </h:head>
+    <h:body>
+        <h2>Detalhes</h2>  
+        <h:panelGrid columns="2">
+
+            <h:outputLabel for="descricao" value="Descrição: " />
+            <h:outputText 
+                id="descricao"
+                value="#{administratorManager.selectedMaterial.descricao}"/>
+
+            <h:outputLabel for="suporte" value="Suporte do Material: " />
+            <h:outputText 
+                id="suporte"
+                value="#{administratorManager.selectedMaterial.suporte}"/>
+            
+               <h:outputLabel for="tipoSuporte" value="Tipo do Suporte do Material: " />
+            <h:outputText 
+                id="tipoSuporte"
+                value="#{administratorManager.selectedMaterial.tipoSuporte}"/>
+            
+              <h:outputLabel for="link" value="Link URL: " />
+            <h:outputText 
+                id="link"
+                value="#{administratorManager.selectedMaterial.link}"/>
+
+        </h:panelGrid>
+
+        <br>         
+        </br>
+
+        <h:form>                  
+            <h:commandLink
+                id="return"
+                value="Voltar"
+                action="material_capacitacao_todos?faces-redirect=true" />
+        </h:form>
+
+    </h:body>
+</html>
+
