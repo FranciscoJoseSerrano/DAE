@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.ws.rs.Path;
 
 /**
  *
@@ -26,7 +27,7 @@ import javax.persistence.NamedQuery;
 @NamedQueries({
     @NamedQuery(name = "getAllMateriaisDeCapacitacao",
             query = "SELECT m FROM MaterialDeCapacitacao m")})
-    /*@NamedQuery(name = "getAllMateriaisByDescricao",
+/*@NamedQuery(name = "getAllMateriaisByDescricao",
             query = "SELECT m FROM MaterialDeCapacitacao m WHERE descricao LIKE :descricao")})*/
 public class MaterialDeCapacitacao implements Serializable {
 
@@ -49,8 +50,17 @@ public class MaterialDeCapacitacao implements Serializable {
             = @JoinColumn(name = "MATERIAL_CODE", referencedColumnName = "ID"))
     private LinkedList<Necessidade> necessidades;
 
-    public MaterialDeCapacitacao() {
+    @ManyToMany
+    @JoinTable(name = "CUIDADOR_MATERIAL",
+            joinColumns
+            = @JoinColumn(name = "MATERIAL_CODE", referencedColumnName = "ID"),
+            inverseJoinColumns
+            = @JoinColumn(name = "CUIDADOR_CODE", referencedColumnName = "USERNAME"))
+    private LinkedList<Cuidador> cuidadores;
 
+    public MaterialDeCapacitacao() {
+        this.necessidades = new LinkedList<>();
+        this.cuidadores = new LinkedList<>();
     }
 
     public MaterialDeCapacitacao(String descricao, SuporteMaterialDeCapacitacao suporte, TipoMaterialDeCapacitacao tipo, String link) {
@@ -59,6 +69,7 @@ public class MaterialDeCapacitacao implements Serializable {
         this.tipoSuporte = tipo;
         this.link = link;
         this.necessidades = new LinkedList<>();
+        this.cuidadores = new LinkedList<>();
     }
 
     public Long getId() {
@@ -120,8 +131,8 @@ public class MaterialDeCapacitacao implements Serializable {
     public LinkedList<Necessidade> getNecessidades() {
         return necessidades;
     }
-    
-    public void addNecessidade(Necessidade n){
+
+    public void addNecessidade(Necessidade n) {
         this.necessidades.add(n);
     }
 
@@ -134,4 +145,11 @@ public class MaterialDeCapacitacao implements Serializable {
         return "Tipo: " + tipoSuporte + "//Suporte: " + suporte;
     }
 
+    public LinkedList<Cuidador> getCuidadores() {
+        return cuidadores;
+    }
+
+    public void addCuidador(Cuidador c) {
+        cuidadores.add(c);
+    }
 }

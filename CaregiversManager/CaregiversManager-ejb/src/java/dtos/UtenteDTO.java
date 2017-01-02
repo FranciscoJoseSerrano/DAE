@@ -52,4 +52,12 @@ public class UtenteDTO {
         setName(null);
 
     }
+    
+    @Override
+    public String toString() {
+        return "ID : " + this.id + "\n"
+                +"Nome : " + this.name; //To change body of generated methods, choose Tools | Templates.
+    }
+        
+    
 }

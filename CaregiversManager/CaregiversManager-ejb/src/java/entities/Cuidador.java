@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -22,17 +23,22 @@ public class Cuidador extends Utilizador implements Serializable {
     private LinkedList<Utente> utentes;
 
     @OneToMany(mappedBy = "cuidador", cascade = CascadeType.REMOVE)
-    LinkedList<ProcedimentoAplicado> procedimentosAplicados;
+    private LinkedList<ProcedimentoAplicado> procedimentosAplicados;
+
+    @ManyToMany(mappedBy = "cuidadores")
+    private LinkedList<MaterialDeCapacitacao> materiais;
 
     public Cuidador() {
         utentes = new LinkedList<>();
         procedimentosAplicados = new LinkedList<>();
+        materiais = new LinkedList<>();
     }
 
     public Cuidador(String username, String nome, String password) {
-        super(username,password,nome,GROUP.Cuidador);
+        super(username, password, nome, GROUP.Cuidador);
         utentes = new LinkedList<>();
         procedimentosAplicados = new LinkedList<>();
+        materiais = new LinkedList<>();
     }
 
     @Override
@@ -40,7 +46,6 @@ public class Cuidador extends Utilizador implements Serializable {
         return username;
     }
 
- 
     public LinkedList<Utente> getMyUtentes() {
         return utentes;
     }
@@ -59,6 +64,14 @@ public class Cuidador extends Utilizador implements Serializable {
 
     public void setProcedimentosAplicados(LinkedList<ProcedimentoAplicado> procedimentosAplicados) {
         this.procedimentosAplicados = procedimentosAplicados;
+    }
+
+    public LinkedList<MaterialDeCapacitacao> getMateriais() {
+        return materiais;
+    }
+    
+    public void addMaterial(MaterialDeCapacitacao m){
+        materiais.add(m);
     }
 
 }

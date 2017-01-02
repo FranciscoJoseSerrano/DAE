@@ -7,16 +7,15 @@ package ejbs;
 
 import dtos.UtenteDTO;
 import entities.Cuidador;
+import entities.Necessidade;
 import entities.Utente;
 import exceptions.EntityDoesNotExistsException;
 import java.util.LinkedList;
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -66,6 +65,27 @@ public class UtenteBean {
             utente.addCuidador(cuidador);
 
         } catch (EntityDoesNotExistsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
+    public void giveUtenteToNecessidade(int idUtente, int idNecessidade) throws EntityDoesNotExistsException{
+        try{
+            
+            Utente utente = em.find(Utente.class, idUtente);
+            if (utente == null){
+                throw new EntityDoesNotExistsException("Não existe Utente com esse id.");
+            }
+            
+            Necessidade necessidade = em.find(Necessidade.class, idNecessidade);
+            if (necessidade == null){
+                throw new EntityDoesNotExistsException("Não existe Necessidade com esse id");
+            }
+            necessidade.addUtente(utente);
+            utente.addNecessidade(necessidade);
+        }catch (EntityDoesNotExistsException e) {
             throw e;
         } catch (Exception e) {
             throw new EJBException(e.getMessage());

@@ -7,6 +7,8 @@ package ejbs;
 
 import dtos.CuidadorDTO;
 import entities.Cuidador;
+import entities.MaterialDeCapacitacao;
+import entities.Utente;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistsException;
 import exceptions.MyConstraintViolationException;
@@ -104,6 +106,35 @@ public class CuidadorBean {
         return null;
     }
 
+    public void giveCuidadorToMateriais(String usernameCuidador, Long idMaterial)
+            throws EntityDoesNotExistsException {
+        try {
+
+            Cuidador cuidador = em.find(Cuidador.class, usernameCuidador);
+            if (cuidador == null) {
+                throw new EntityDoesNotExistsException("Não existe Cuidador com esse username.");
+            }
+
+            MaterialDeCapacitacao material = em.find(MaterialDeCapacitacao.class, idMaterial);
+            if (material == null) {
+                throw new EntityDoesNotExistsException("Não existe Material com esse id");
+            }
+
+            
+            material.addCuidador(cuidador);
+            cuidador.addMaterial(material);
+            
+
+        } catch (EntityDoesNotExistsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
+    
+    
+    
 //AUXILIARES
     private List<CuidadorDTO> getCuidadoresDTOS(List<Cuidador> cuidadores) {
         List<CuidadorDTO> cuidadoresDTOs = new ArrayList<>();

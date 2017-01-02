@@ -9,24 +9,32 @@ import dtos.CuidadorDTO;
 import dtos.MaterialDeCapacitacaoDTO;
 import entities.Cuidador;
 import entities.MaterialDeCapacitacao;
+import entities.Necessidade;
 import entities.SuporteMaterialDeCapacitacao;
 import entities.TipoMaterialDeCapacitacao;
 import exceptions.EntityDoesNotExistsException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  *
  * @author Francisco
  */
 @Stateless
+@Path("/materialC")
 public class MaterialDeCapacitacaoBean {
 
     @PersistenceContext
@@ -80,7 +88,7 @@ public class MaterialDeCapacitacaoBean {
     public List<MaterialDeCapacitacaoDTO> getMateriaisDeCapacitacao() {
         try {
             List<MaterialDeCapacitacao> materiais = em.createNamedQuery("getAllMateriaisDeCapacitacao").getResultList();
-            return getMateriaisDTO(materiais);
+            return getMateriaisDTO((LinkedList<MaterialDeCapacitacao>) materiais);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -106,14 +114,56 @@ public class MaterialDeCapacitacaoBean {
 
         return null;
     }
+    
+    
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("materialNecessidade/{idNecessidade}/")
+    public LinkedList<MaterialDeCapacitacaoDTO> getMateriaisNecessidades(@PathParam("idNecessidade") int idNecessidade) throws EntityDoesNotExistsException{
+       try {
+            Necessidade necessidade = em.find(Necessidade.class, idNecessidade);
+            if (necessidade == null) {
+                throw new EntityDoesNotExistsException("Esta necessidade não existe.");
+            }
+
+            return getMateriaisDTO(necessidade.getMateriais());
+            
+        } catch (EntityDoesNotExistsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+            
+    }
+    
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("materialCuidador/{usernameCuidador}/")
+    public LinkedList<MaterialDeCapacitacaoDTO> getMateriaisCuidador(@PathParam("usernameCuidador") String usernameCuidador) throws EntityDoesNotExistsException{
+        try{
+            Cuidador cuidador = em.find(Cuidador.class, usernameCuidador);
+            if (cuidador == null){
+                throw new EntityDoesNotExistsException("Esta necessidade não existe.");
+            }
+            return getMateriaisDTO(cuidador.getMateriais());
+        }catch (EntityDoesNotExistsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+       
+    
 
 //AUXILIARES  
     private MaterialDeCapacitacaoDTO transformDTO(MaterialDeCapacitacao m) {
         return new MaterialDeCapacitacaoDTO(m.getId(), m.getDescricao(), m.getSuporte(), m.getTipo(), m.getLink());
     }
 
-    private List<MaterialDeCapacitacaoDTO> getMateriaisDTO(List<MaterialDeCapacitacao> materiais) {
-        List<MaterialDeCapacitacaoDTO> materiaisDTO = new ArrayList<>();
+    private LinkedList<MaterialDeCapacitacaoDTO> getMateriaisDTO(LinkedList<MaterialDeCapacitacao> materiais) {
+        LinkedList<MaterialDeCapacitacaoDTO> materiaisDTO = new LinkedList();
 
         for (MaterialDeCapacitacao m : materiais) {
             materiaisDTO.add(transformDTO(m));
@@ -156,3 +206,5 @@ public class MaterialDeCapacitacaoBean {
     }
 
 }
+
+

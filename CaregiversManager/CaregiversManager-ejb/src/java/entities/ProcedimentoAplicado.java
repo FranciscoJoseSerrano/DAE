@@ -6,6 +6,8 @@
 package entities;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -25,31 +27,28 @@ import javax.persistence.OneToOne;
 @Entity
 public class ProcedimentoAplicado implements Serializable {
 
-   
     @Id
-   private Long id;
-    
-   
-   @ManyToOne
-   @JoinColumn(name = "CUIDADOR_CODE")
-   private Cuidador cuidador;
-   
+    private Long id;
+
     @ManyToOne
-   @JoinColumn(name = "UTENTE_CODE")
+    @JoinColumn(name = "CUIDADOR_CODE")
+    private Cuidador cuidador;
+
+    @ManyToOne
+    @JoinColumn(name = "UTENTE_CODE")
     private Utente utente;
-    
-   @OneToOne
+
+    @OneToOne
     private MaterialDeCapacitacao procedimento;
-   
-   public ProcedimentoAplicado(){
-       
-   }
+    
+    private String dataFormatada;
 
     public ProcedimentoAplicado(Long id, Cuidador cuidador, Utente utente, MaterialDeCapacitacao procedimento) {
         this.id = id;
         this.cuidador = cuidador;
         this.utente = utente;
         this.procedimento = procedimento;
+        this.dataFormatada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date());
     }
 
     public Cuidador getCuidador() {
@@ -68,7 +67,6 @@ public class ProcedimentoAplicado implements Serializable {
         this.utente = utente;
     }
 
-    
     public Long getId() {
         return id;
     }
@@ -77,7 +75,10 @@ public class ProcedimentoAplicado implements Serializable {
         this.id = id;
     }
 
-   
+    public String getDataFormatada() {
+        return dataFormatada;
+    }
+
     public MaterialDeCapacitacao getProcedimento() {
         return procedimento;
     }
@@ -85,8 +86,5 @@ public class ProcedimentoAplicado implements Serializable {
     public void setProcedimento(MaterialDeCapacitacao procedimento) {
         this.procedimento = procedimento;
     }
-   
-    
-   
-    
+
 }

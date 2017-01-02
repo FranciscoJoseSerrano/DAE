@@ -7,11 +7,7 @@ package ejbs;
 
 import entities.SuporteMaterialDeCapacitacao;
 import entities.TipoMaterialDeCapacitacao;
-import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistsException;
-import exceptions.MyConstraintViolationException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -60,12 +56,41 @@ public class ConfigBean {
             utenteBean.create(3, "kiko");
             utenteBean.create(2, "asd");
             necessidadeBean.create(1, "esta doente o filho da puta", "é para o cu, esse cabrão");
+            necessidadeBean.create(2, "Filho de um boi vai bater a bota", "ja foste");
             materialBean.create("Baby i like your style", SuporteMaterialDeCapacitacao.TEXTO, TipoMaterialDeCapacitacao.TUTORIAL, null);
             materialBean.create("baby", SuporteMaterialDeCapacitacao.TEXTO, TipoMaterialDeCapacitacao.TUTORIAL, null);
-
+            materialBean.create("sdd", SuporteMaterialDeCapacitacao.TEXTO, TipoMaterialDeCapacitacao.TUTORIAL, null);
+            materialBean.create("Teste", SuporteMaterialDeCapacitacao.TEXTO, TipoMaterialDeCapacitacao.PROCEDIMENTO, null);
+            utenteBean.giveUtenteToCuidador(2, "kiko");
+            utenteBean.giveUtenteToCuidador(1, "kiko");
+            
+            
             Integer x = 1;
             Long b = x.longValue();
+            
             necessidadeBean.giveMateriaisNecessidades(1, b);
+            //cuidadorBean.giveCuidadorToMateriais("kiko", b);
+            x=3;
+            b=x.longValue();
+            necessidadeBean.giveMateriaisNecessidades(1, b);
+            x=2;
+            b= x.longValue();
+            necessidadeBean.giveMateriaisNecessidades(2, b);
+            x=4;
+            b= x.longValue();
+            necessidadeBean.giveMateriaisNecessidades(1, b);
+            
+            utenteBean.giveUtenteToNecessidade(1, 2);
+            utenteBean.giveUtenteToNecessidade(1, 1);
+            
+            x=2;
+            b= x.longValue();
+            cuidadorBean.giveCuidadorToMateriais("kiko", b);
+            
+            x=4;
+            b= x.longValue();
+            cuidadorBean.giveCuidadorToMateriais("kiko", b);
+            
         } catch (EntityDoesNotExistsException  e) {
             System.err.println("Error: " + e.getMessage());
         }

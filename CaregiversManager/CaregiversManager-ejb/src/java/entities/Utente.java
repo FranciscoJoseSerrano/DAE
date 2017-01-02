@@ -77,6 +77,9 @@ public class Utente implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+    public void addNecessidade(Necessidade e){
+        this.necessidades.add(e);
+    }
 
     public LinkedList<Necessidade> getNecessidades() {
         return necessidades;
@@ -101,5 +104,13 @@ public class Utente implements Serializable {
     public Cuidador getCuidador() {
         return cuidador;
     }
+
+    @Override
+    public String toString() {
+        return "ID : " + this.id + "\n"
+                +"Nome : " + this.name; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 
 }

@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -19,36 +21,39 @@ import javax.validation.constraints.NotNull;
  * @author Marta
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "getAllNecessidades",
+            query = "SELECT m FROM Necessidade m")})
 public class Necessidade implements Serializable {
-    
+
     @Id
     private int id;
     @NotNull
     private String nome;
-    private String descrição;
-   
-   @ManyToMany(mappedBy = "necessidades")
-   private LinkedList<MaterialDeCapacitacao> materiais;
-   
+    private String descricao;
+
+    @ManyToMany(mappedBy = "necessidades")
+    private LinkedList<MaterialDeCapacitacao> materiais;
+
     @ManyToMany
     @JoinTable(name = "UTENTE_NECESSIDADE",
             joinColumns
             = @JoinColumn(name = "UTENTE_CODE", referencedColumnName = "ID"),
             inverseJoinColumns
             = @JoinColumn(name = "NECESSIDADE_CODE", referencedColumnName = "ID"))
-   private LinkedList<Utente> utentes;
-   
-   public Necessidade(){
-       
-   }
+    private LinkedList<Utente> utentes;
 
-    public Necessidade(int id, String nome, String descrição) {
+    public Necessidade() {
+
+    }
+
+    public Necessidade(int id, String nome, String descricao) {
         this.id = id;
         this.nome = nome;
-        this.descrição = descrição;
-        this.materiais=new LinkedList<>();
-        this.utentes=new LinkedList<>();
-                
+        this.descricao = descricao;
+        this.materiais = new LinkedList<>();
+        this.utentes = new LinkedList<>();
+
     }
 
     public LinkedList<Utente> getUtentes() {
@@ -75,12 +80,12 @@ public class Necessidade implements Serializable {
         this.nome = nome;
     }
 
-    public String getDescrição() {
-        return descrição;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setDescrição(String descrição) {
-        this.descrição = descrição;
+    public void setDescrição(String descricao) {
+        this.descricao = descricao;
     }
 
     public LinkedList<MaterialDeCapacitacao> getMateriais() {
@@ -90,12 +95,13 @@ public class Necessidade implements Serializable {
     public void setMateriais(LinkedList<MaterialDeCapacitacao> materiais) {
         this.materiais = materiais;
     }
-    
-    public void addMaterial(MaterialDeCapacitacao m){
+
+    public void addMaterial(MaterialDeCapacitacao m) {
         this.materiais.add(m);
     }
-   
-    
-    
+
+    public void addUtente(Utente e) {
+        this.utentes.add(e);
+    }
+
 }
-    
